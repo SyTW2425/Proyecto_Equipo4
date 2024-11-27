@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUser = exports.getUser = exports.getUsers = void 0;
 const user_1 = __importDefault(require("../models/user"));
-// Metodo para obtener todos los usuarios
+// Método para obtener todos los usuarios
 const getUsers = async (req, res) => {
     try {
         const users = await user_1.default.find();
@@ -16,7 +16,7 @@ const getUsers = async (req, res) => {
     }
 };
 exports.getUsers = getUsers;
-// Metodo para obtener un usuario por su id
+// Método para obtener un usuario por su id
 const getUser = async (req, res) => {
     try {
         const user = await user_1.default.findById(req.params.id);
@@ -27,15 +27,27 @@ const getUser = async (req, res) => {
     }
 };
 exports.getUser = getUser;
-// Metodo para crear un usuario
+// Método para crear un nuevo usuario
 const createUser = async (req, res) => {
     try {
-        const user = new user_1.default(req.body);
-        await user.save();
-        res.status(201).json(user);
+        // Validamos que los campos requeridos estén presentes
+        const { username, name, lastname, email, password, creditCard } = req.body;
+        // Crear una nueva instancia del modelo de usuario
+        const newUser = new user_1.default({
+            username,
+            name,
+            lastname,
+            email,
+            password, // Aquí podrías encriptar la contraseña antes de guardarla
+            creditCard
+        });
+        // Guardar el usuario en la base de datos
+        await newUser.save();
+        // Responder con el usuario creado
+        res.status(201).json(newUser);
     }
     catch (error) {
-        res.status(400).json(error);
+        res.status(400).json({ message: 'Error al crear el usuario', error });
     }
 };
 exports.createUser = createUser;

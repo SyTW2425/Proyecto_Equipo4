@@ -20,11 +20,11 @@
           <form @submit.prevent="enviarFormulario" class="space-y-4">
             <!-- Campo Nombre de Usuario -->
             <div>
-              <label for="nombreUsuario" class="block text-sm font-medium text-gray-700">Nombre de Usuario:</label>
+              <label for="username" class="block text-sm font-medium text-gray-700">Nombre de Usuario:</label>
               <input
                 type="text"
-                id="nombreUsuario"
-                v-model="form.nombreUsuario"
+                id="username"
+                v-model="form.username"
                 placeholder="Ingresa tu nombre de usuario"
                 required
                 class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
@@ -36,8 +36,8 @@
               <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
               <input
                 type="text"
-                id="nombre"
-                v-model="form.nombre"
+                id="name"
+                v-model="form.name"
                 placeholder="Ingresa tu nombre"
                 required
                 class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
@@ -49,8 +49,8 @@
               <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido:</label>
               <input
                 type="text"
-                id="apellido"
-                v-model="form.apellido"
+                id="lastname"
+                v-model="form.lastname"
                 placeholder="Ingresa tu apellido"
                 required
                 class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
@@ -97,9 +97,9 @@
           <!-- Mensaje de confirmación -->
           <div v-if="mensajeEnviado" class="mt-6 p-4 bg-green-100 rounded-lg text-green-700 border border-green-300">
             <p><strong>¡Registro exitoso!</strong></p>
-            <p><strong>Nombre de Usuario:</strong> {{ form.nombreUsuario }}</p>
-            <p><strong>Nombre:</strong> {{ form.nombre }}</p>
-            <p><strong>Apellido:</strong> {{ form.apellido }}</p>
+            <p><strong>Nombre de Usuario:</strong> {{ form.username }}</p>
+            <p><strong>Nombre:</strong> {{ form.name }}</p>
+            <p><strong>Apellido:</strong> {{ form.lastname }}</p>
             <p><strong>Correo Electrónico:</strong> {{ form.email }}</p>
           </div>
         </div>
@@ -115,9 +115,9 @@ export default {
   data() {
     return {
       form: {
-        nombreUsuario: "",
-        nombre: "",
-        apellido: "",
+        username: "",
+        name: "",
+        lastname: "",
         email: "",
         password: "",
       },
@@ -139,9 +139,9 @@ export default {
 
         // Limpiar formulario si es necesario
         this.form = {
-          nombreUsuario: "",
-          nombre: "",
-          apellido: "",
+          username: "",
+          name: "",
+          lastname: "",
           email: "",
           password: "",
         };
