@@ -7,6 +7,8 @@ const router = (0, express_1.Router)();
 router.get('/', userController_1.getUsers);
 // Obtener un usuario por ID
 router.get('/:id', userController_1.getUser);
-// Registrar un nuevo usuario (ruta POST)
+// obtener usuario por su nombre de usuario
+router.post('/login', userController_1.login);
 router.post('/register', userController_1.createUser);
+// Registrar un nuevo usuario (ruta POST)
 exports.default = router;

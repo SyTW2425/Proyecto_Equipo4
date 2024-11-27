@@ -17,7 +17,7 @@
       <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 w-full sm:max-w-sm">
         <div class="bg-white p-6 shadow-lg rounded-lg">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">Crea tu cuenta</h2>
-          <form @submit.prevent="enviarFormulario" class="space-y-4">
+          <form @submit.prevent="formularioRegistro" class="space-y-4">
             <!-- Campo Nombre de Usuario -->
             <div>
               <label for="username" class="block text-sm font-medium text-gray-700">Nombre de Usuario:</label>
@@ -97,10 +97,12 @@
           <!-- Mensaje de confirmación -->
           <div v-if="mensajeEnviado" class="mt-6 p-4 bg-green-100 rounded-lg text-green-700 border border-green-300">
             <p><strong>¡Registro exitoso!</strong></p>
-            <p><strong>Nombre de Usuario:</strong> {{ form.username }}</p>
-            <p><strong>Nombre:</strong> {{ form.name }}</p>
-            <p><strong>Apellido:</strong> {{ form.lastname }}</p>
-            <p><strong>Correo Electrónico:</strong> {{ form.email }}</p>
+            <div>
+              <button class="w-full bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-emerald-500 transition-all duration-300">
+                <!-- Cambié el router-link para que tenga estilo dentro del botón -->
+                <router-link to="/Sign-in" class="text-white">Inicia sesión</router-link>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -125,10 +127,10 @@ export default {
     };
   },
   methods: {
-    async enviarFormulario() {
+    async formularioResgistro() {
       try {
         // URL del endpoint del backend
-        const url = "http://localhost:3000/users";
+        const url = "http://localhost:3000/users/register";
 
         // Enviar datos al backend
         const respuesta = await axios.post(url, this.form);

@@ -21,6 +21,22 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
+// Metodo para iniciar sesion
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { username, password } = req.body;
+    const user = await User;
+    const userFound = await user.findOne({ username, password });
+    if (userFound) {
+      res.status(200).json(userFound);
+    } else {
+      res.status(400).json({ message: 'Usuario o contraseña incorrectos' });
+    }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+}
+
 // Método para crear un nuevo usuario
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {

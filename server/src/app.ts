@@ -4,11 +4,18 @@ import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes';
 import listRoutes from './routes/listRoutes';
+//importar cors
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:8080', // Permitir solicitudes desde este origen
+  methods: 'GET,POST,PUT,DELETE', // Métodos permitidos
+  allowedHeaders: 'Content-Type,Authorization', // Encabezados permitidos
+}));
 
 // Conexión a MongoDB
 mongoose.set('strictQuery', true);

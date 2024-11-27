@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/SyTW2425/Proyecto_E4#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "mongodb": "^5.4.0",
@@ -25,6 +26,7 @@
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/whatwg-url": "^8.2.2",
     "typescript": "^5.6.3"

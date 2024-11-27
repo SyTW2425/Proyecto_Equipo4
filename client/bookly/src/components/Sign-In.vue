@@ -16,25 +16,25 @@
       
       <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 w-full sm:max-w-sm">
         <div class="formulario bg-white p-6 shadow-lg rounded-lg">
-          <form @submit.prevent="enviarFormulario" class="space-y-4">
+          <form @submit.prevent="formularioInicio" class="space-y-4">
             <div>
-              <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
+              <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre de usuario:</label>
               <input
                 type="text"
                 id="nombre"
-                v-model="form.nombre"
-                placeholder="Ingresa tu nombre"
+                v-model="form.username"
+                placeholder="Ingresa tu nombre de usuario"
                 required
                 class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
               />
             </div>
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+              <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
               <input
-                type="email"
-                id="email"
-                v-model="form.email"
-                placeholder="Ingresa tu email"
+                type="password"
+                id="password"
+                v-model="form.password"
+                placeholder="Ingresa tu contraseña"
                 required
                 class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
               />
@@ -59,8 +59,8 @@
 
           <div v-if="mensajeEnviado" class="mt-6 p-4 bg-green-100 rounded-lg text-green-700 border border-green-300">
             <p><strong>¡Formulario enviado!</strong></p>
-            <p><strong>Nombre:</strong> {{ form.nombre }}</p>
-            <p><strong>Email:</strong> {{ form.email }}</p>
+            <p><strong>Nombre:</strong> {{ form.username }}</p>
+            <p><strong>Contraseña:</strong> {{ form.password }}</p>
           </div>
         </div>
       </div>
@@ -69,21 +69,53 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       form: {
-        nombre: "",
-        email: "",
+        username: "",
+        password: "",
       },
       mensajeEnviado: false,
     };
   },
   methods: {
-    enviarFormulario() {
-      this.mensajeEnviado = true;
-      console.log("Formulario enviado con los datos:", this.form);
-    },
+    async formularioInicio() {
+      try {
+        // URL del endpoint del backend (asegúrate de que esta ruta sea la correcta)
+        const url = "http://localhost:3000/users/login";
+
+        // Enviar datos del formulario (nombre de usuario y contraseña) al backend
+        const respuesta = await axios.post(url, {
+          username: this.form.username,
+          password: this.form.password,
+        });
+
+        // Procesar respuesta del servidor
+        console.log("Respuesta del servidor:", respuesta.data);
+
+        // Si el inicio de sesión es exitoso, puedes hacer algo aquí (e.g., redirigir al usuario)
+        // Por ejemplo, guardar un token en el localStorage
+        localStorage.setItem('authToken', respuesta.data.token);  // Suponiendo que el token se devuelve en la respuesta
+
+        // Redirigir al usuario a otra página después de iniciar sesión (e.g., al dashboard)
+        this.$router.push('/');  // Ajusta la ruta según corresponda
+
+        // Limpiar formulario si es necesario
+        this.form = {
+          username: "",
+          password: "",
+        };
+
+        // Si lo deseas, mostrar un mensaje de éxito
+        this.mensajeEnviado = true;
+
+      } catch (error) {
+        console.error("Error al iniciar sesión", error.response || error.message);
+        alert(error.response.data.message || "Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
+      }
+    }
   },
 };
 </script>

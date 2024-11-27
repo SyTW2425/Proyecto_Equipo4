@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = exports.getUser = exports.getUsers = void 0;
+exports.createUser = exports.login = exports.getUser = exports.getUsers = void 0;
 const user_1 = __importDefault(require("../models/user"));
 // Método para obtener todos los usuarios
 const getUsers = async (req, res) => {
@@ -27,6 +27,24 @@ const getUser = async (req, res) => {
     }
 };
 exports.getUser = getUser;
+// Metodo para iniciar sesion
+const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await user_1.default;
+        const userFound = await user.findOne({ username, password });
+        if (userFound) {
+            res.status(200).json(userFound);
+        }
+        else {
+            res.status(400).json({ message: 'Usuario o contraseña incorrectos' });
+        }
+    }
+    catch (error) {
+        res.status(400).json(error);
+    }
+};
+exports.login = login;
 // Método para crear un nuevo usuario
 const createUser = async (req, res) => {
     try {
