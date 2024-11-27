@@ -99,7 +99,6 @@
             <p><strong>¡Registro exitoso!</strong></p>
             <div>
               <button class="w-full bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-emerald-500 transition-all duration-300">
-                <!-- Cambié el router-link para que tenga estilo dentro del botón -->
                 <router-link to="/Sign-in" class="text-white">Inicia sesión</router-link>
               </button>
             </div>
@@ -127,7 +126,7 @@ export default {
     };
   },
   methods: {
-    async formularioResgistro() {
+    async formularioRegistro() {
       try {
         // URL del endpoint del backend
         const url = "http://localhost:3000/users/register";
@@ -139,7 +138,7 @@ export default {
         console.log("Respuesta del servidor:", respuesta.data);
         this.mensajeEnviado = true;
 
-        // Limpiar formulario si es necesario
+        // Limpiar formulario
         this.form = {
           username: "",
           name: "",

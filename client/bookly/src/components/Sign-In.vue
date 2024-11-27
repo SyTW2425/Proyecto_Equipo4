@@ -83,10 +83,10 @@ export default {
   methods: {
     async formularioInicio() {
       try {
-        // URL del endpoint del backend (asegúrate de que esta ruta sea la correcta)
+        // URL del endpoint del backend
         const url = "http://localhost:3000/users/login";
 
-        // Enviar datos del formulario (nombre de usuario y contraseña) al backend
+        // Enviar datos al backend
         const respuesta = await axios.post(url, {
           username: this.form.username,
           password: this.form.password,
@@ -95,21 +95,10 @@ export default {
         // Procesar respuesta del servidor
         console.log("Respuesta del servidor:", respuesta.data);
 
-        // Si el inicio de sesión es exitoso, puedes hacer algo aquí (e.g., redirigir al usuario)
-        // Por ejemplo, guardar un token en el localStorage
         localStorage.setItem('authToken', respuesta.data.token);  // Suponiendo que el token se devuelve en la respuesta
 
-        // Redirigir al usuario a otra página después de iniciar sesión (e.g., al dashboard)
-        this.$router.push('/');  // Ajusta la ruta según corresponda
-
-        // Limpiar formulario si es necesario
-        this.form = {
-          username: "",
-          password: "",
-        };
-
-        // Si lo deseas, mostrar un mensaje de éxito
-        this.mensajeEnviado = true;
+        // Redirigir al usuario a la página de inicio
+        this.$router.push('/');  
 
       } catch (error) {
         console.error("Error al iniciar sesión", error.response || error.message);
