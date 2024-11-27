@@ -109,6 +109,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -123,9 +125,30 @@ export default {
     };
   },
   methods: {
-    enviarFormulario() {
-      this.mensajeEnviado = true;
-      console.log("Formulario enviado con los datos:", this.form);
+    async enviarFormulario() {
+      try {
+        // URL del endpoint del backend
+        const url = "http://localhost:3000/users";
+
+        // Enviar datos al backend
+        const respuesta = await axios.post(url, this.form);
+
+        // Procesar respuesta del servidor
+        console.log("Respuesta del servidor:", respuesta.data);
+        this.mensajeEnviado = true;
+
+        // Limpiar formulario si es necesario
+        this.form = {
+          nombreUsuario: "",
+          nombre: "",
+          apellido: "",
+          email: "",
+          password: "",
+        };
+      } catch (error) {
+        console.error("Error al registrar:", error.response || error.message);
+        alert("Ocurrió un error al registrar. Por favor, inténtalo de nuevo.");
+      }
     },
   },
 };
