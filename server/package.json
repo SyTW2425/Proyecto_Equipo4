@@ -1,0 +1,32 @@
+{
+  "name": "proyecto_e4",
+  "version": "1.0.0",
+  "description": "Proyecto SyTW E4",
+  "main": "app.js",
+  "scripts": {
+    "test": "test",
+    "start": "node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SyTW2425/Proyecto_E4.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SyTW2425/Proyecto_E4/issues"
+  },
+  "homepage": "https://github.com/SyTW2425/Proyecto_E4#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "mongodb": "^5.4.0",
+    "mongoose": "^6.7.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/whatwg-url": "^8.2.2",
+    "typescript": "^5.6.3"
+  }
+}
