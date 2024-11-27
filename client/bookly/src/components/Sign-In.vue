@@ -29,7 +29,7 @@
               />
             </div>
             <div>
-              <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
+              <label for="password" class="block text-sm font-medium text-gray-700">Contraseña:</label>
               <input
                 type="password"
                 id="password"
