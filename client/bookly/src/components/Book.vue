@@ -80,7 +80,7 @@
  </div>
  <!-- Recuadro de resumen independiente -->
  <div class="ml-80 mt-8 w-[60%] space-y-8">
-   <div class="bg-white bg-opacity-60 p-4 rounded-lg shadow-md">
+   <div class="bg-pink-100 bg-opacity-60 p-4 rounded-lg shadow-md">
      <h3 class="text-lg font-semibold">Resumen del libro</h3>
      <p class="text-sm mt-2 text-gray-700">
        Este es un breve resumen del contenido del libro, que describe la trama principal, los personajes y el mensaje central. Un resumen conciso que da al lector una idea de qué esperar sin revelar spoilers.
