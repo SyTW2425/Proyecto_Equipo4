@@ -150,6 +150,25 @@
       </div>
     </div>
   </div>
+  <div class="mt-8 bg-white bg-opacity-60 p-4 rounded-lg shadow-md w-[60%] ml-80">
+  <h3 class="text-lg font-semibold text-center">Reseñas del libro</h3>
+  <div v-if="reviews.length > 0">
+    <div
+      v-for="(resena, index) in reviews"
+      :key="index"
+      class="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50"
+    >
+      <h4 class="text-md font-semibold">{{ resena.title }}</h4>
+      <p class="text-sm text-gray-700">{{ resena.description }}</p>
+      <p class="text-sm text-yellow-500">Valoración: {{ resena.rating }} Estrella(s)</p>
+      <p class="text-xs text-gray-500">Por: {{ resena.user }} - {{ new Date(resena.created).toLocaleDateString() }}</p>
+    </div>
+  </div>
+  <div v-else>
+    <p class="text-gray-500 text-sm">No hay reseñas para este libro todavía.</p>
+  </div>
+</div>
+
 </template>
 
 <script>
@@ -158,21 +177,27 @@ import axios from "axios";
 export default {
   data() {
     return {
+      bookId: "9788419131812", // ID del libro actual (puedes hacerlo dinámico)
+      reviews: [], // Almacenará las reseñas del libro
       review: {
-        user: "UsuarioActual", // Puedes ajustar este valor con el usuario logueado
-        book: "IDDelLibro", // ID del libro en cuestión
+        user: "UsuarioActual", // Cambiar según el usuario logueado
+        book: "9788419131812", // ID del libro
         title: "",
         description: "",
         rating: "",
-        created: new Date(),
       },
       mensajeExito: false,
     };
   },
   methods: {
     async crearResena() {
+      if (!this.review.title || !this.review.description || !this.review.rating) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
       try {
-        const url = "http://localhost:3000/reviews/create"; // Endpoint del backend para las reseñas
+        const url = "http://localhost:3000/reviews/create"; // Endpoint para crear reseñas
         const response = await axios.post(url, this.review);
 
         console.log("Reseña enviada:", response.data);
@@ -180,21 +205,43 @@ export default {
 
         // Limpiar formulario
         this.review = {
-          user: "UsuarioActual", // Puedes mantener este valor
-          book: "TituloDelLibro",
+          user: "UsuarioActual",
+          book: this.bookId,
           title: "",
           description: "",
           rating: "",
-          created: new Date(),
         };
+
+        // Actualizar la lista de reseñas después de agregar una nueva
+        await this.obtenerResenas();
       } catch (error) {
+        if (error.response?.status === 400) {
+          alert("Error: Verifica los datos enviados.");
+        } else if (error.response?.status === 500) {
+          alert("Error del servidor. Por favor, intenta más tarde.");
+        } else {
+          alert("Error desconocido al enviar la reseña.");
+        }
         console.error("Error al enviar la reseña:", error.response || error.message);
-        alert("Ocurrió un error al enviar tu reseña. Inténtalo nuevamente.");
+      }
+    },
+    async obtenerResenas() {
+      try {
+        const url = `http://localhost:3000/reviews/by-book?book=${this.bookId}`; // Endpoint correcto
+        const response = await axios.get(url);
+        this.reviews = response.data; // Asigna las reseñas al array
+      } catch (error) {
+        console.error("Error al obtener las reseñas:", error.response || error.message);
+        this.reviews = []; // Asegúrate de que no haya datos rotos
       }
     },
   },
+  mounted() {
+    this.obtenerResenas();
+  },
 };
 </script>
+
 
 <style>
 /* Puedes personalizar los estilos aquí */

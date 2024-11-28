@@ -21,6 +21,26 @@ export const getReview = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
+// Metodo para obtener todas las reseñas de un libro
+export const getReviewsByBook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { book } = req.query;
+
+    if (!book) {
+      res.status(400).json({ message: "El ID del libro es obligatorio." });
+      return;
+    }
+
+    // Buscar todas las reseñas donde el campo `book` coincida
+    const reviews = await Review.find({ book });
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error("Error al obtener reseñas por libro:", error);
+    res.status(500).json({ message: "Error interno al obtener reseñas por libro." });
+  }
+};
+
+
 // Metodo para crear una reseña
 export const createReview = async (req: Request, res: Response): Promise<void> => {
   try {

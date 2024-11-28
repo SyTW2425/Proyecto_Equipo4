@@ -7,15 +7,15 @@ const router = Router();
 router.get("/", getBooks);
 
 // Obtener un libro por su ISBN
-router.get("/:isbn", getBookByIsbn);
+router.get("/:id", getBookByIsbn);
 
 // Crear un nuevo libro
-router.post("/", createBook);
+router.post("/create", createBook);
 
 // Actualizar un libro por su ISBN
-router.put("/:isbn", updateBook);
+router.put("/:id", updateBook);
 
 // Eliminar un libro por su ISBN
-router.delete("/:isbn", deleteBook);
+router.delete("/:id", deleteBook);
 
 export default router;

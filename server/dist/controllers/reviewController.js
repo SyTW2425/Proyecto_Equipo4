@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReviewsByUser = exports.deleteReview = exports.updateReview = exports.createReview = exports.getReview = exports.getReviews = void 0;
+exports.getReviewsByUser = exports.deleteReview = exports.updateReview = exports.createReview = exports.getReviewsByBook = exports.getReview = exports.getReviews = void 0;
 const review_1 = require("../models/review");
 // Metodo para obtener todas las reseñas
 const getReviews = async (req, res) => {
@@ -24,6 +24,24 @@ const getReview = async (req, res) => {
     }
 };
 exports.getReview = getReview;
+// Metodo para obtener todas las reseñas de un libro
+const getReviewsByBook = async (req, res) => {
+    try {
+        const { book } = req.query;
+        if (!book) {
+            res.status(400).json({ message: "El ID del libro es obligatorio." });
+            return;
+        }
+        // Buscar todas las reseñas donde el campo `book` coincida
+        const reviews = await review_1.Review.find({ book });
+        res.status(200).json(reviews);
+    }
+    catch (error) {
+        console.error("Error al obtener reseñas por libro:", error);
+        res.status(500).json({ message: "Error interno al obtener reseñas por libro." });
+    }
+};
+exports.getReviewsByBook = getReviewsByBook;
 // Metodo para crear una reseña
 const createReview = async (req, res) => {
     try {
