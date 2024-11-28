@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes';
+import reviewRoutes from './routes/reviewRoutes'
 import listRoutes from './routes/listRoutes';
 //importar cors
 import cors from 'cors';
@@ -26,6 +27,8 @@ mongoose.connect(process.env.MONGODB_URI as string)
 // Configuración de rutas '/users/register'
 app.use('/users', userRoutes)
 //app.use(listRoutes);
+
+app.use('/reviews', reviewRoutes)
 
 
 // Manejo de rutas no encontradas

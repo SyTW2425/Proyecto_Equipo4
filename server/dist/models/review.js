@@ -8,7 +8,6 @@ const reviewSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     rating: { type: Number, required: true },
-    likes: { type: Number, default: 0 },
     created: { type: Date, default: Date.now }
 });
 exports.Review = (0, mongoose_1.model)("Review", reviewSchema);
