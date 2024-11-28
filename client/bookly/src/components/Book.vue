@@ -54,16 +54,8 @@
    <div class="flex flex-col justify-start space-y-2">
      <h1 class="text-3xl font-semibold">El Título del Libro</h1>
      <p class="text-lg text-gray-600">Autor del Libro</p>
-     <!-- Estrellas -->
-     <div class="flex mt-2">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 3.926L7.618 8.4 3.2 9.217a1 1 0 00-.554 1.732l3.604 3.278-1.031 5.9a1 1 0 001.449 1.057l4.667-2.446 4.667 2.446a1 1 0 001.448-1.057l-1.032-5.9 3.604-3.278a1 1 0 00-.554-1.732l-4.418-.817-1.43-4.474a1 1 0 00-1.892 0z"/></svg>
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 3.926L7.618 8.4 3.2 9.217a1 1 0 00-.554 1.732l3.604 3.278-1.031 5.9a1 1 0 001.449 1.057l4.667-2.446 4.667 2.446a1 1 0 001.448-1.057l-1.032-5.9 3.604-3.278a1 1 0 00-.554-1.732l-4.418-.817-1.43-4.474a1 1 0 00-1.892 0z"/></svg>
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 3.926L7.618 8.4 3.2 9.217a1 1 0 00-.554 1.732l3.604 3.278-1.031 5.9a1 1 0 001.449 1.057l4.667-2.446 4.667 2.446a1 1 0 001.448-1.057l-1.032-5.9 3.604-3.278a1 1 0 00-.554-1.732l-4.418-.817-1.43-4.474a1 1 0 00-1.892 0z"/></svg>
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 3.926L7.618 8.4 3.2 9.217a1 1 0 00-.554 1.732l3.604 3.278-1.031 5.9a1 1 0 001.449 1.057l4.667-2.446 4.667 2.446a1 1 0 001.448-1.057l-1.032-5.9 3.604-3.278a1 1 0 00-.554-1.732l-4.418-.817-1.43-4.474a1 1 0 00-1.892 0z"/></svg>
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 3.926L7.618 8.4 3.2 9.217a1 1 0 00-.554 1.732l3.604 3.278-1.031 5.9a1 1 0 001.449 1.057l4.667-2.446 4.667 2.446a1 1 0 001.448-1.057l-1.032-5.9 3.604-3.278a1 1 0 00-.554-1.732l-4.418-.817-1.43-4.474a1 1 0 00-1.892 0z"/></svg>
-     </div>
-     <!-- Cuadro de detalles del libro -->
-     <div class="bg-pink-100 bg-opacity-60 p-4 mt-4 rounded-lg shadow-md">
+       <!-- Cuadro de detalles del libro -->
+     <div class="bg-white bg-opacity-60 p-4 mt-4 rounded-lg shadow-md">
        <h3 class="text-lg font-semibold">Detalles del libro</h3>
        <p class="text-sm mt-2 text-gray-700">
          <strong>Editorial:</strong> Titania
@@ -93,6 +85,117 @@
      <p class="text-sm mt-2 text-gray-700">
        Este es un breve resumen del contenido del libro, que describe la trama principal, los personajes y el mensaje central. Un resumen conciso que da al lector una idea de qué esperar sin revelar spoilers.
      </p>
-   </div>
+   </div> 
  </div>
- </template>
+  <div>
+
+    <!-- FORMULARIO PARA CREAR UNA RESEÑA -->
+    <div class="mt-8 bg-white bg-opacity-60 p-4 rounded-lg shadow-md w-[60%] ml-80">
+      <h3 class="text-lg font-semibold text-center">Escribe tu reseña</h3>
+      <form @submit.prevent="crearResena" class="space-y-4">
+        <!-- Campo Título -->
+        <div>
+          <label for="titulo" class="block text-sm font-medium text-gray-700">Título de la reseña:</label>
+          <input
+            type="text"
+            id="titulo"
+            v-model="review.title"
+            placeholder="Escribe un título para tu reseña"
+            required
+            class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+        </div>
+
+        <!-- Campo Descripción -->
+        <div>
+          <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción:</label>
+          <textarea
+            id="descripcion"
+            v-model="review.description"
+            placeholder="Describe tu experiencia con este libro"
+            required
+            rows="4"
+            class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
+          ></textarea>
+        </div>
+
+        <!-- Campo Valoración -->
+        <div>
+          <label for="rating" class="block text-sm font-medium text-gray-700">Valoración:</label>
+          <select
+            id="rating"
+            v-model="review.rating"
+            required
+            class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
+          >
+            <option value="" disabled selected>Selecciona una valoración</option>
+            <option v-for="num in 5" :key="num" :value="num">{{ num }} Estrella(s)</option>
+          </select>
+        </div>
+
+        <!-- Botón Enviar -->
+        <div>
+          <button
+            type="submit"
+            class="rounded-full px-3 py-2 w-full text-sm flex justify-center bg-emerald-600 font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+          >
+            Enviar Reseña
+          </button>
+        </div>
+      </form>
+
+      <!-- Mensaje de éxito -->
+      <div v-if="mensajeExito" class="mt-4 p-4 bg-green-100 text-green-700 border border-green-300 rounded-lg">
+        <p>¡Reseña enviada con éxito!</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      review: {
+        user: "UsuarioActual", // Puedes ajustar este valor con el usuario logueado
+        book: "IDDelLibro", // ID del libro en cuestión
+        title: "",
+        description: "",
+        rating: "",
+        created: new Date(),
+      },
+      mensajeExito: false,
+    };
+  },
+  methods: {
+    async crearResena() {
+      try {
+        const url = "http://localhost:3000/reviews/create"; // Endpoint del backend para las reseñas
+        const response = await axios.post(url, this.review);
+
+        console.log("Reseña enviada:", response.data);
+        this.mensajeExito = true;
+
+        // Limpiar formulario
+        this.review = {
+          user: "UsuarioActual", // Puedes mantener este valor
+          book: "TituloDelLibro",
+          title: "",
+          description: "",
+          rating: "",
+          created: new Date(),
+        };
+      } catch (error) {
+        console.error("Error al enviar la reseña:", error.response || error.message);
+        alert("Ocurrió un error al enviar tu reseña. Inténtalo nuevamente.");
+      }
+    },
+  },
+};
+</script>
+
+<style>
+/* Puedes personalizar los estilos aquí */
+</style>
