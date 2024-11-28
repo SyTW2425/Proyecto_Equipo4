@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes';
 import reviewRoutes from './routes/reviewRoutes'
+import bookRoutes from './routes/bookRoutes'
 import listRoutes from './routes/listRoutes';
 //importar cors
 import cors from 'cors';
@@ -29,6 +30,7 @@ app.use('/users', userRoutes)
 //app.use(listRoutes);
 
 app.use('/reviews', reviewRoutes)
+app.use('/books', bookRoutes)
 
 
 // Manejo de rutas no encontradas

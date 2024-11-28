@@ -8,6 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const reviewRoutes_1 = __importDefault(require("./routes/reviewRoutes"));
+const bookRoutes_1 = __importDefault(require("./routes/bookRoutes"));
 //importar cors
 const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
@@ -27,6 +28,7 @@ mongoose_1.default.connect(process.env.MONGODB_URI)
 app.use('/users', userRoutes_1.default);
 //app.use(listRoutes);
 app.use('/reviews', reviewRoutes_1.default);
+app.use('/books', bookRoutes_1.default);
 // Manejo de rutas no encontradas
 app.use((req, res) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
