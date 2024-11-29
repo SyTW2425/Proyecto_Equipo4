@@ -11,4 +11,5 @@ router.get('/:id', userController_1.getUser);
 router.post('/login', userController_1.login);
 router.post('/register', userController_1.createUser);
 // Registrar un nuevo usuario (ruta POST)
+router.get('/user', userController_1.verifyToken, userController_1.getUser);
 exports.default = router;
