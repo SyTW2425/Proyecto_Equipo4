@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getBooks, getBookByIsbn, createBook, updateBook, deleteBook } from "../controllers/bookController";
+import { getBooks, getBookById, createBook, updateBook, deleteBook } from "../controllers/bookController";
 
 const router = Router();
 
@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", getBooks);
 
 // Obtener un libro por su ISBN
-router.get("/:id", getBookByIsbn);
+router.get("/:id", getBookById);
 
 // Crear un nuevo libro
 router.post("/create", createBook);

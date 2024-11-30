@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookByIsbn = exports.getBooks = void 0;
+exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookById = exports.getBooks = void 0;
 const book_1 = __importDefault(require("../models/book"));
 // Obtener todos los libros
 const getBooks = async (req, res) => {
@@ -16,22 +16,27 @@ const getBooks = async (req, res) => {
     }
 };
 exports.getBooks = getBooks;
-// Obtener un libro por ISBN
-const getBookByIsbn = async (req, res) => {
+const getBookById = async (req, res) => {
     try {
-        const { isbn } = req.params;
-        const book = await book_1.default.findOne({ isbn });
-        if (!book) {
-            res.status(404).json({ message: 'Book not found' });
+        const bookId = req.params.id; // Obtén el ID del libro desde los parámetros de la ruta
+        if (!bookId) {
+            res.status(400).json({ message: "El ID del libro es obligatorio." });
             return;
         }
-        res.status(200).json(book);
+        // Busca el libro en la base de datos por su _id
+        const book = await book_1.default.findById(bookId);
+        if (!book) {
+            res.status(404).json({ message: "Libro no encontrado." });
+            return;
+        }
+        res.status(200).json(book); // Devuelve el libro encontrado
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error al obtener el libro:", error);
+        res.status(500).json({ message: "Error al obtener el libro." });
     }
 };
-exports.getBookByIsbn = getBookByIsbn;
+exports.getBookById = getBookById;
 // Crear un nuevo libro
 const createBook = async (req, res) => {
     try {

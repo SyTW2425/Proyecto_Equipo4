@@ -1,29 +1,40 @@
 <template>
   <div>
+    <!-- VÍDEO AL PRINCIPIO -->
+    <div class="relative w-full h-[100vh]">
+      <video class="w-full h-full object-cover" autoplay loop muted>
+        <source src="../assets/clip_cabecera_inicio.mp4" type="video/mp4" />
+      </video>
+    </div>
+
     <!-- BARRA SUPERIOR -->
     <div class="bg-emerald-600 text-white py-4 px-6 flex justify-between items-center fixed top-0 left-0 w-full shadow-md z-50">
       <div class="flex items-center space-x-4">
-        <img src="../assets/logo.png" alt="Logo" class="h-10 w-10 rounded-full">
+        <img src="../assets/logo.png" alt="Logo" class="h-10 w-10 rounded-full" />
         <span class="text-xl font-semibold">Bookly</span>
       </div>
-  
+
       <!-- BARRA DE BÚSQUEDA -->
       <div class="flex items-center bg-white text-black rounded-full px-4 py-2 w-1/3">
-        <input type="text" placeholder="Buscar..." class="flex-grow bg-transparent outline-none px-2">
+        <input type="text" placeholder="Buscar..." class="flex-grow bg-transparent outline-none px-2" />
         <button class="text-emerald-600 hover:text-emerald-800">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zm-7 4a7 7 0 1114 0 7 7 0 01-14 0zm14.707 6.293a1 1 0 00-1.414 0l-2.83 2.829a1 1 0 001.415 1.415l2.83-2.829a1 1 0 000-1.415z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zm-7 4a7 7 0 1114 0 7 7 0 01-14 0zm14.707 6.293a1 1 0 00-1.414 0l-2.83 2.829a1 1 0 001.415 1.415l2.83-2.829a1 1 0 000-1.415z"
+              clip-rule="evenodd"
+            />
           </svg>
         </button>
-      </div>    
-      
+      </div>
+
       <nav>
         <ul>
           <li><router-link to="/sign-in">Sign In</router-link></li>
         </ul>
-      </nav> 
+      </nav>
     </div>
-  
+
     <!-- BARRA IZQUIERDA -->
     <div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
       <!-- Contenido superior -->
@@ -40,28 +51,34 @@
             <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Fantasía</a>
           </li>
           <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Ciencia ficción</a>
+          </li>
+          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Misterio</a>
+          </li>
+          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Terror</a>
+          </li>
+          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
             <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Historia</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Libros prácticos</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Literatura</a>
           </li>
           <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
             <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Novedades</a>
           </li>
         </ul>
       </div>
-  
+
       <!-- Contenido inferior -->
       <div class="p-4 flex justify-center">
         <p class="text-sm">© 2024 Mi Web</p>
       </div>
     </div>
-  
+
     <!-- PANTALLA CENTRAL -->
-    <div class="ml-64 mt-[17vh] px-8 flex flex-col items-center">
+    <div class="ml-64 mt-[4vh] px-8 flex flex-col items-center z-10">
+      <!-- Encabezado de Libros Más Vendidos -->
+      <h2 class="text-4xl font-bold text-gray-800 mt-4 mb-8 underline">Libros más vendidos</h2>
+
       <!-- Contenedor de Libros -->
       <div class="grid grid-cols-3 gap-8 mt-8">
         <!-- Itera sobre los libros obtenidos -->
@@ -77,19 +94,19 @@
             class="w-[100px] h-[150px] object-cover rounded-lg"
           />
           <!-- Información del libro -->
-          <div>
-            <h3 class="text-xl font-semibold text-blue-800">{{ book.title }}</h3>
-            <p class="text-sm text-gray-700">{{ book.author }}</p>
-            <p class="text-sm font-bold text-gray-800">{{ book.price.toFixed(2) }}€</p>
-          </div>
+        <div>
+          <h3 class="text-xl font-semibold text-blue-800">
+            <router-link :to="`/book/${book._id}`">{{ book.title }}</router-link>
+          </h3>
+          <p class="text-sm text-gray-700">{{ book.author }}</p>
+          <p class="text-sm font-bold text-gray-800">{{ book.price.toFixed(2) }}€</p>
+        </div>
+
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
-
 
 <script>
 import axios from "axios";

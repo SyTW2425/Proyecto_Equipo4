@@ -11,20 +11,27 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Obtener un libro por ISBN
-export const getBookByIsbn = async (req: Request, res: Response): Promise<void> => {
+export const getBookById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { isbn } = req.params;
-    const book = await Book.findOne({ isbn });
+    const bookId = req.params.id; // Obtén el ID del libro desde los parámetros de la ruta
 
-    if (!book) {
-      res.status(404).json({ message: 'Book not found' });
+    if (!bookId) {
+      res.status(400).json({ message: "El ID del libro es obligatorio." });
       return;
     }
 
-    res.status(200).json(book);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    // Busca el libro en la base de datos por su _id
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      res.status(404).json({ message: "Libro no encontrado." });
+      return;
+    }
+
+    res.status(200).json(book); // Devuelve el libro encontrado
+  } catch (error) {
+    console.error("Error al obtener el libro:", error);
+    res.status(500).json({ message: "Error al obtener el libro." });
   }
 };
 
