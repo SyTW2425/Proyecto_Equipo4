@@ -47,24 +47,6 @@
           <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
             <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Libros infantiles</a>
           </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Fantasía</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Ciencia ficción</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Misterio</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Terror</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Historia</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Novedades</a>
-          </li>
         </ul>
       </div>
 
@@ -85,23 +67,31 @@
         <div
           v-for="book in books"
           :key="book._id"
-          class="flex items-center space-x-4 bg-white p-4 shadow-lg rounded-lg"
+          class="relative group bg-white p-4 shadow-lg rounded-lg"
         >
-          <!-- Imagen del libro -->
-          <img
-            :src="book.image"
-            :alt="book.title"
-            class="w-[100px] h-[150px] object-cover rounded-lg"
-          />
-          <!-- Información del libro -->
-        <div>
-          <h3 class="text-xl font-semibold text-blue-800">
-            <router-link :to="`/book/${book._id}`">{{ book.title }}</router-link>
-          </h3>
-          <p class="text-sm text-gray-700">{{ book.author }}</p>
-          <p class="text-sm font-bold text-gray-800">{{ book.price.toFixed(2) }}€</p>
-        </div>
+          <!-- Imagen del libro con hover -->
+          <div class="relative w-[150px] h-[200px] mx-auto">
+            <img
+              :src="book.image"
+              :alt="book.title"
+              class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+            />
+            <!-- Opciones flotantes al hacer hover -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+              <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Comprar</button>
+              <router-link :to="`/book/${book._id}`" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-center">Ver Reseñas</router-link>
+              <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Añadir a la Lista</button>
+            </div>
+          </div>
 
+          <!-- Información del libro -->
+          <div class="mt-4 text-center">
+            <h3 class="text-xl font-semibold text-blue-800">
+              <router-link :to="`/book/${book._id}`">{{ book.title }}</router-link>
+            </h3>
+            <p class="text-sm text-gray-700">{{ book.author }}</p>
+            <p class="text-sm font-bold text-gray-800">{{ book.price.toFixed(2) }}€</p>
+          </div>
         </div>
       </div>
     </div>
