@@ -19,9 +19,16 @@
       
       <nav>
         <ul>
-          <li><router-link to="/sign-in">Sign In</router-link></li>
+        <!-- Botón "Sign In" solo se muestra si no hay un usuario autenticado -->
+          <li v-if="!user"><router-link to="/sign-in">Sign In</router-link></li>
+          <!-- Botón "Cerrar sesión" se muestra si hay un usuario autenticado -->
+          <li v-else>
+            <button @click="showLogout = !showLogout">{{ user.username }}</button>
+            <button v-if="showLogout" @click="logout">&nbsp;Logout</button>
+          </li>
         </ul>
-      </nav> 
+      </nav>
+
     </div>
   
     <!-- BARRA IZQUIERDA -->
@@ -99,6 +106,8 @@ export default {
   data() {
     return {
       books: [], // Lista de libros desde la base de datos
+      user: null,
+      showLogout: false,
     };
   },
   methods: {
@@ -113,15 +122,19 @@ export default {
   },
   async mounted() {
     this.fetchBooks(); // Obtiene los libros al cargar el componente
-    const response = await axios.get('http://localhost:3000/user', {
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('authToken')}`
-      }
-    });
-    console.log(response.data);
   },
-  // async created() {
-
-  // },
+  async created() {
+    try { 
+      const response = await axios.get('http://localhost:3000/user', {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+      this.user = response.data.user;
+    } catch (error) {
+      this.user = null;
+    }
+    // console.log(response.data);
+  },
 };
 </script>
