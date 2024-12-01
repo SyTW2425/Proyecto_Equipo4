@@ -32,7 +32,11 @@ const getUser = async (req, res) => {
         res.status(200).json({ user });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error al obtener la información del usuario', error });
+        const { id } = res.locals.user || {}; // En caso de que no haya ID disponible
+        res.status(500).json({
+            message: `Error al obtener la información del usuario con ID: ${id}`,
+            error
+        });
     }
 };
 exports.getUser = getUser;
@@ -46,6 +50,7 @@ const verifyToken = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jsonwebtoken_1.default.verify(token, SECRET_KEY);
+        console.log(decoded);
         // Valida que el `id` sea un ObjectId válido
         if (!decoded || typeof decoded !== 'object' || !mongoose_1.default.Types.ObjectId.isValid(decoded.id)) {
             res.status(400).json({ message: 'Token inválido: ID no válido' });

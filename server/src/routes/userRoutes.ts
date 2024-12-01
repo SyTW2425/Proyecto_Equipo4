@@ -15,6 +15,5 @@ router.post('/login', login);
 router.post('/register', createUser);
 // Registrar un nuevo usuario (ruta POST)
 
-router.get('/user', verifyToken, getUser);
 
 export default router;

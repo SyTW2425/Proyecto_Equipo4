@@ -29,23 +29,29 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({ user });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener la información del usuario', error });
+    const { id } = res.locals.user || {}; // En caso de que no haya ID disponible
+    res.status(500).json({ 
+      message: `Error al obtener la información del usuario con ID: ${id}`, 
+      error 
+    });
   }
 };
 
 // Middleware para verificar el token
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
-
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({ message: 'Token no proporcionado o inválido' });
     return;
   }
-
+    
   const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
+
+    console.log(decoded);
 
     // Valida que el `id` sea un ObjectId válido
     if (!decoded || typeof decoded !== 'object' || !mongoose.Types.ObjectId.isValid((decoded as any).id)) {

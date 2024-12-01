@@ -111,16 +111,17 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.fetchBooks(); // Obtiene los libros al cargar el componente
-  },
-  async created() {
-    const response = await axios.get('http://localhost:3000/users/user', {
+    const response = await axios.get('http://localhost:3000/user', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        authorization: `Bearer ${localStorage.getItem('authToken')}`
       }
     });
     console.log(response.data);
   },
+  // async created() {
+
+  // },
 };
 </script>
