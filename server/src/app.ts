@@ -2,11 +2,11 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-import userRoutes from './routes/userRoutes';
-import { verifyToken, getUser } from './controllers/userController';
-import reviewRoutes from './routes/reviewRoutes'
-import bookRoutes from './routes/bookRoutes'
-import listRoutes from './routes/listRoutes';
+import userRoutes from './routes/userRoutes.js';
+import { verifyToken, getUser } from './controllers/userController.js';
+import reviewRoutes from './routes/reviewRoutes.js'
+import bookRoutes from './routes/bookRoutes.js'
+import listRoutes from './routes/listRoutes.js';
 //importar cors
 import cors from 'cors';
 
@@ -55,3 +55,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+export default app;

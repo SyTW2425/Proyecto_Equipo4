@@ -1,30 +1,23 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = exports.login = exports.verifyToken = exports.getUser = exports.getUsers = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const user_1 = __importDefault(require("../models/user"));
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import User from '../models/user.js';
 const SECRET_KEY = 'bookly_secret_key';
 // Método para obtener todos los usuarios
-const getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
     try {
-        const users = await user_1.default.find();
+        const users = await User.find();
         res.json(users);
     }
     catch (error) {
         res.status(400).json(error);
     }
 };
-exports.getUsers = getUsers;
 // Método para obtener un usuario por su id
-const getUser = async (req, res) => {
+export const getUser = async (req, res) => {
     try {
         const { id } = res.locals.user; // Obtén el ID del usuario del token
         // Recupera al usuario desde la base de datos
-        const user = await user_1.default.findById(id).select('-password'); // Excluye la contraseña si existe
+        const user = await User.findById(id).select('-password'); // Excluye la contraseña si existe
         if (!user) {
             res.status(404).json({ message: 'Usuario no encontrado' });
             return;
@@ -39,9 +32,8 @@ const getUser = async (req, res) => {
         });
     }
 };
-exports.getUser = getUser;
 // Middleware para verificar el token
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         res.status(401).json({ message: 'Token no proporcionado o inválido' });
@@ -49,10 +41,10 @@ const verifyToken = (req, res, next) => {
     }
     const token = authHeader.split(' ')[1];
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, SECRET_KEY);
         console.log(decoded);
         // Valida que el `id` sea un ObjectId válido
-        if (!decoded || typeof decoded !== 'object' || !mongoose_1.default.Types.ObjectId.isValid(decoded.id)) {
+        if (!decoded || typeof decoded !== 'object' || !mongoose.Types.ObjectId.isValid(decoded.id)) {
             res.status(400).json({ message: 'Token inválido: ID no válido' });
             return;
         }
@@ -65,12 +57,11 @@ const verifyToken = (req, res, next) => {
         return;
     }
 };
-exports.verifyToken = verifyToken;
 // Metodo para iniciar sesion
-const login = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await user_1.default.findOne({ username, password });
+        const user = await User.findOne({ username, password });
         if (user) {
             const payload = {
                 id: user._id,
@@ -80,7 +71,7 @@ const login = async (req, res) => {
                 lastname: user.lastname,
             };
             // Generar el token JWT
-            const token = jsonwebtoken_1.default.sign(payload, SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
             // Responder con el token y los datos del usuario (sin la contraseña)
             res.status(200).json({
                 token,
@@ -95,14 +86,13 @@ const login = async (req, res) => {
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
-exports.login = login;
 // Método para crear un nuevo usuario
-const createUser = async (req, res) => {
+export const createUser = async (req, res) => {
     try {
         // Validamos que los campos requeridos estén presentes
         const { username, name, lastname, email, password, creditCard } = req.body;
         // Crear una nueva instancia del modelo de usuario
-        const newUser = new user_1.default({
+        const newUser = new User({
             username,
             name,
             lastname,
@@ -119,4 +109,3 @@ const createUser = async (req, res) => {
         res.status(400).json({ message: 'Error al crear el usuario', error });
     }
 };
-exports.createUser = createUser;
