@@ -125,6 +125,12 @@ export default {
         console.error("Error al obtener los libros:", error.response || error.message);
       }
     },
+    // metodo logout que borre el token del localStorage y los datos del usuario
+    logout() {
+      localStorage.removeItem('authToken');
+      this.user = null;
+      this.showLogout = false;
+    }
   },
   async mounted() {
     this.fetchBooks(); // Obtiene los libros al cargar el componente
