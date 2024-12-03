@@ -1,22 +1,31 @@
 import { Router } from 'express';
 import {
-  getLists, getList, createList, updateList, deleteList } from '../controllers/listController.js';
+  getLists,
+  getListById,
+  createList,
+  updateList,
+  deleteList,
+  addBookToList,
+} from '../controllers/listController.js';
 
 const router: Router = Router();
 
 // Ruta para obtener todas las listas de libros
-router.get('/lists', getLists);
+router.get('/', getLists);
 
 // Ruta para obtener una lista de libros por ID
-router.get('/lists/:id', getList);
+router.get('/:id', getListById);
 
 // Ruta para crear una nueva lista de libros
-router.post('/lists', createList);
+router.post('/', createList);
 
 // Ruta para actualizar una lista de libros por ID
-router.put('/lists/:id', updateList);
+router.put('/:id', updateList);
 
 // Ruta para eliminar una lista de libros por ID
-router.delete('/lists/:id', deleteList);
+router.delete('/:id', deleteList);
+
+// Ruta para añadir un libro a una lista
+router.post('/add-book', addBookToList);
 
 export default router;

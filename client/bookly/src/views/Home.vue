@@ -29,16 +29,62 @@
       </div>
 
       <nav>
-        <ul>
-        <!-- Botón "Sign In" solo se muestra si no hay un usuario autenticado -->
-          <li v-if="!user"><router-link to="/sign-in">Sign In</router-link></li>
-          <!-- Botón "Cerrar sesión" se muestra si hay un usuario autenticado -->
-          <li v-else>
-            <button @click="showLogout = !showLogout">{{ user.username }}</button>
-            <button v-if="showLogout" @click="logout">&nbsp;Logout</button>
-          </li>
-        </ul>
-      </nav>
+  <ul>
+    <!-- Botón "Sign In" solo se muestra si no hay un usuario autenticado -->
+    <li v-if="!user">
+      <router-link to="/sign-in">Sign In</router-link>
+    </li>
+    <!-- Botón con menú desplegable para el usuario autenticado -->
+    <li v-else class="relative">
+      <button
+        @click="toggleMenu"
+        class="flex items-center space-x-2 text-white focus:outline-none"
+      >
+        <span>{{ user.username }}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      <!-- Menú desplegable -->
+      <div
+        v-if="showMenu"
+        class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
+      >
+        <router-link
+          to="/cart"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >
+          Carrito de Compra
+        </router-link>
+        <router-link
+          to="/book-list"
+          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >
+          <router-link to="/book-list">Lista de Libros</router-link>
+        </router-link>
+        <button
+          @click="logout"
+          class="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >
+          Logout
+        </button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
     </div>
 
     <!-- BARRA IZQUIERDA -->
@@ -112,8 +158,8 @@ export default {
   data() {
     return {
       books: [], // Lista de libros desde la base de datos
-      user: null,
-      showLogout: false,
+      user: null, // Usuario autenticado
+      showMenu: false, // Controla la visibilidad del menú desplegable
     };
   },
   methods: {
@@ -125,28 +171,33 @@ export default {
         console.error("Error al obtener los libros:", error.response || error.message);
       }
     },
-    // metodo logout que borre el token del localStorage y los datos del usuario
+    toggleMenu() {
+      this.showMenu = !this.showMenu; // Alterna la visibilidad del menú
+    },
     logout() {
-      localStorage.removeItem('authToken');
-      this.user = null;
-      this.showLogout = false;
-    }
+      // Lógica para cerrar sesión
+      localStorage.removeItem("authToken"); // Elimina el token de autenticación
+      this.user = null; // Restablece el estado del usuario
+      this.showMenu = false; // Cierra el menú desplegable
+    },
   },
   async mounted() {
-    this.fetchBooks(); // Obtiene los libros al cargar el componente
-  },
-  async created() {
-    try { 
-      const response = await axios.get('http://localhost:3000/user', {
+    // Carga de libros al montar el componente
+    await this.fetchBooks();
+
+    // Obtención de usuario autenticado
+    try {
+      const response = await axios.get("http://localhost:3000/user", {
         headers: {
-          authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
+          authorization: `Bearer ${localStorage.getItem("authToken")}`, // Envía el token almacenado
+        },
       });
-      this.user = response.data.user;
+      this.user = response.data.user; // Almacena los datos del usuario
     } catch (error) {
-      this.user = null;
+      console.error("Error al obtener el usuario:", error.response || error.message);
+      this.user = null; // Si ocurre un error, se asegura que el usuario esté null
     }
-    // console.log(response.data);
   },
 };
 </script>
+

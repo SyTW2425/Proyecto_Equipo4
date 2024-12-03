@@ -173,7 +173,7 @@ export default {
       bookId: this.$route.params.id,
       reviews: [],
       review: {
-        user: "UsuarioActual",
+        user: null, // El usuario logeado se asignará aquí
         book: this.$route.params.id,
         title: "",
         description: "",
@@ -181,6 +181,7 @@ export default {
       },
       mensajeExito: false,
       isLoading: true,
+      currentUser: null, // Usuario actualmente logeado
     };
   },
   watch: {
@@ -209,12 +210,22 @@ export default {
       }
     },
     async crearResena() {
+      if (!this.review.title || !this.review.description || !this.review.rating) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
       try {
+        // Asigna el usuario actual antes de enviar la reseña
+        this.review.user = this.currentUser.username;
+
         const url = "http://localhost:3000/reviews/create";
         await axios.post(url, this.review);
         this.mensajeExito = true;
+
+        // Restablece el formulario de reseña
         this.review = {
-          user: "UsuarioActual",
+          user: this.currentUser.username,
           book: this.bookId,
           title: "",
           description: "",
@@ -236,8 +247,23 @@ export default {
         this.reviews = [];
       }
     },
+    async fetchCurrentUser() {
+      try {
+        const response = await axios.get("http://localhost:3000/user", {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        this.currentUser = response.data.user;
+        this.review.user = this.currentUser.username; // Asigna el usuario logeado a las reseñas
+      } catch (error) {
+        console.error("Error al obtener el usuario actual:", error.response || error.message);
+        this.currentUser = null;
+      }
+    },
   },
-  mounted() {
+  async mounted() {
+    await this.fetchCurrentUser();
     this.loadBookDetails();
   },
 };
