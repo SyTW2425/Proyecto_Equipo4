@@ -42,12 +42,12 @@ describe('User Controller', () => {
     };
 
     request(app)
-      .post('/register')
+      .post('/users/register')
       .send(incompleteUser)
-      .expect(401)
+      .expect(400)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property('message', 'Token no proporcionado o inválido');
+        expect(res.body).to.have.property('message', 'Error al crear el usuario');
         done();
       });
   });

@@ -49,8 +49,12 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
 // Actualizar un libro por ISBN
 export const updateBook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { isbn } = req.params;
-    const updatedBook = await Book.findOneAndUpdate({ isbn }, req.body, {
+    const bookId = req.params.id; // Obtén el ID del libro desde los parámetros de la ruta
+    if (!bookId) {
+      res.status(400).json({ message: "El ID del libro es obligatorio." });
+      return;
+    }
+    const updatedBook = await Book.findOneAndUpdate({ bookId }, req.body, {
       new: true, // Devuelve el documento actualizado
       runValidators: true, // Ejecuta validaciones del esquema
     });

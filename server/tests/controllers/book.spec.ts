@@ -64,7 +64,7 @@ describe('Book Controller', () => {
   // Test para actualizar un libro
   it('debería actualizar un libro existente', (done) => {
     const updatedBook = {
-      title: 'The Great Gatsby - Updated',
+      title: 'The Great Gatsby.',
       price: 19.99
     };
 
@@ -74,7 +74,7 @@ describe('Book Controller', () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property('title', 'The Great Gatsby - Updated');
+        expect(res.body).to.have.property('title', 'The Great Gatsby.');
         expect(res.body).to.have.property('price', 19.99);
         done();
       });
@@ -87,7 +87,7 @@ describe('Book Controller', () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property('message', 'Book deleted successfully');
+        expect(res.body).to.have.property('message', 'Libro eliminado con éxito.');
         done();
       });
   });

@@ -55,6 +55,9 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+//default export
+export default app;
+
 
 // import express, { Request, Response } from 'express';
 // import mongoose from 'mongoose';
