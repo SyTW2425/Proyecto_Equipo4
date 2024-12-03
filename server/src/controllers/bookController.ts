@@ -54,7 +54,7 @@ export const updateBook = async (req: Request, res: Response): Promise<void> => 
       res.status(400).json({ message: "El ID del libro es obligatorio." });
       return;
     }
-    const updatedBook = await Book.findOneAndUpdate({ bookId }, req.body, {
+    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
       new: true, // Devuelve el documento actualizado
       runValidators: true, // Ejecuta validaciones del esquema
     });
