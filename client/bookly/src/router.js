@@ -3,6 +3,7 @@ import Home from './views/Home.vue'; // Vista principal
 import SignIn from './components/Sign-In.vue';
 import SignUp from './components/Sign-Up.vue';
 import Book from './components/Book.vue';
+import BookList from './components/BookList.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/book/:id',
     name: 'Book',
     component: Book
+  },
+  {
+    path: '/book-list',
+    name: 'BookList',
+    component: BookList
   }
 ];
 
