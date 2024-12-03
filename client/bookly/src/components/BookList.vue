@@ -152,15 +152,16 @@ export default {
   },
   methods: {
     async fetchLists() {
-      try {
-        const response = await axios.get(`http://localhost:3000/lists?username=${this.user.username}`);
-        this.lists = response.data;
-        this.isLoading = false;
-      } catch (error) {
-        console.error("Error al obtener las listas:", error.response || error.message);
-        this.isLoading = false;
-      }
-    },
+  try {
+    const userId = this.user._id; // Obtén el ID del usuario autenticado
+    const response = await axios.get(`http://localhost:3000/lists/user/${userId}`);
+    this.lists = response.data;
+    this.isLoading = false;
+  } catch (error) {
+    console.error("Error al obtener las listas:", error.response || error.message);
+    this.isLoading = false;
+  }
+},
     async createList() {
       try {
         const requestBody = {
@@ -176,7 +177,7 @@ export default {
         this.newList.title = "";
         this.showCreateListModal = false;
         this.successMessage = "Lista creada correctamente.";
-        window.location.reload();
+     window.location.reload();
   } catch (error) {
     console.error("Error al crear la lista:", error.response || error.message);
   }

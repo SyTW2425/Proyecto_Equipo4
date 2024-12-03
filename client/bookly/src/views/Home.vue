@@ -182,13 +182,14 @@ export default {
       }
     },
     async fetchLists() {
-      try {
-        const response = await axios.get(`http://localhost:3000/lists?username=${this.user.username}`);
-        this.lists = response.data;
-      } catch (error) {
-        console.error("Error al obtener las listas:", error.response || error.message);
-      }
-    },
+  try {
+    // Asegúrate de usar el userId del usuario autenticado
+    const response = await axios.get(`http://localhost:3000/lists/user/${this.user._id}`);
+    this.lists = response.data; // Asigna las listas del usuario
+  } catch (error) {
+    console.error("Error al obtener las listas del usuario:", error.response || error.message);
+  }
+},
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },

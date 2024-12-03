@@ -173,3 +173,25 @@ export const removeBookFromList = async (req: Request, res: Response): Promise<v
   }
 };
 
+export const getUserLists = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.params.userId; // Obtén el userId de los parámetros
+
+    if (!userId) {
+      res.status(400).json({ message: "El ID del usuario es obligatorio." });
+      return;
+    }
+
+    const lists = await List.find({ user: userId }); // Filtra las listas por el ID del usuario
+
+    if (!lists || lists.length === 0) {
+      res.status(404).json({ message: "No se encontraron listas para este usuario." });
+      return;
+    }
+
+    res.status(200).json(lists);
+  } catch (error: any) {
+    console.error("Error al obtener las listas:", error.message);
+    res.status(500).json({ message: "Error al obtener las listas.", error: error.message });
+  }
+};
