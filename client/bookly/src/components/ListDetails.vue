@@ -29,6 +29,12 @@
             <h3 class="text-xl font-bold">{{ book.title }}</h3>
             <p class="text-sm text-gray-600">{{ book.author }}</p>
             <img :src="book.image" :alt="book.title" class="mt-4 w-full h-[200px] object-cover rounded-lg" />
+            <button
+              @click="removeBookFromList(book._id)"
+              class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Eliminar de la Lista
+            </button>
           </div>
         </div>
       </div>
@@ -46,20 +52,20 @@ export default {
   name: "ListDetails",
   data() {
     return {
-      list: null,
-      books: [],
-      isLoading: true,
+      list: null, // Detalles de la lista
+      books: [], // Detalles de los libros en la lista
+      isLoading: true, // Indicador de carga
     };
   },
   methods: {
     async fetchListDetails() {
       try {
-        const listId = this.$route.params.id;
+        const listId = this.$route.params.id; // ID de la lista desde la ruta
         const response = await axios.get(`http://localhost:3000/lists/${listId}`);
         this.list = response.data;
 
-        // Cargar los libros basados en la lista
-        const bookIds = this.list.history;
+        // Cargar los detalles de los libros basados en los IDs de la lista
+        const bookIds = this.list.history || [];
         const bookRequests = bookIds.map((id) =>
           axios.get(`http://localhost:3000/books/${id}`)
         );
@@ -68,12 +74,37 @@ export default {
       } catch (error) {
         console.error("Error al cargar los detalles de la lista:", error.response || error.message);
       } finally {
-        this.isLoading = false;
+        this.isLoading = false; // Detiene el indicador de carga
+      }
+    },
+    async removeBookFromList(bookId) {
+      if (!confirm("¿Estás seguro de que quieres eliminar este libro de la lista?")) return;
+
+      try {
+        const listId = this.$route.params.id; // ID de la lista desde la ruta
+
+        // Realiza la solicitud al backend para eliminar el libro
+        const response = await axios.patch("http://localhost:3000/lists/remove-book", {
+          listId,
+          bookId,
+        });
+
+        // Verifica la respuesta del backend
+        console.log("Respuesta del servidor:", response.data);
+
+        // Actualiza la lista y libros localmente
+        this.list.history = this.list.history.filter((id) => id !== bookId);
+        this.books = this.books.filter((book) => book._id !== bookId);
+
+        alert("Libro eliminado de la lista correctamente.");
+      } catch (error) {
+        console.error("Error al eliminar el libro de la lista:", error.response || error.message);
+        alert("Hubo un error al eliminar el libro de la lista.");
       }
     },
   },
   async mounted() {
-    await this.fetchListDetails();
+    await this.fetchListDetails(); // Carga los detalles de la lista al montar el componente
   },
 };
 </script>

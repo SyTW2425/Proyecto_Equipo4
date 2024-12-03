@@ -6,9 +6,12 @@ import {
   updateList,
   deleteList,
   addBookToList,
+  removeBookFromList
 } from '../controllers/listController.js';
 
 const router: Router = Router();
+
+router.patch('/remove-book', removeBookFromList);
 
 // Ruta para obtener todas las listas de libros
 router.get('/', getLists);
@@ -27,5 +30,7 @@ router.delete('/:id', deleteList);
 
 // Ruta para añadir un libro a una lista
 router.post('/add-book', addBookToList);
+
+
 
 export default router;

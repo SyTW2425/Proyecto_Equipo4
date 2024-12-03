@@ -140,3 +140,36 @@ export const addBookToList = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: "Error al añadir el libro a la lista.", error: error.message });
   }
 };
+
+export const removeBookFromList = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { listId, bookId } = req.body;
+
+    if (!listId || !bookId) {
+      res.status(400).json({ message: "El ID de la lista y del libro son obligatorios." });
+      return;
+    }
+
+    const list = await List.findById(listId);
+
+    if (!list) {
+      res.status(404).json({ message: "Lista no encontrada." });
+      return;
+    }
+
+    const bookIndex = list.history.indexOf(bookId);
+    if (bookIndex === -1) {
+      res.status(400).json({ message: "El libro no está en la lista." });
+      return;
+    }
+
+    // Eliminar el libro de la lista
+    list.history.splice(bookIndex, 1);
+    await list.save();
+
+    res.status(200).json({ message: "Libro eliminado de la lista.", list });
+  } catch (error: any) {
+    res.status(500).json({ message: "Error al eliminar el libro de la lista.", error: error.message });
+  }
+};
+

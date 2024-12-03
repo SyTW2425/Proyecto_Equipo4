@@ -16,14 +16,14 @@ app.use(express.json());
 app.use(
   cors({
     origin: 'http://localhost:8080', // Permitir solicitudes desde este origen
-    methods: 'GET,POST,PUT,DELETE', // Métodos permitidos
+    methods: 'GET,POST,PUT,DELETE,PATCH', // Métodos permitidos
     allowedHeaders: 'Content-Type,Authorization', // Encabezados permitidos
   })
 );
 
 app.options('*', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.status(204).end(); // Responde con código 204 (No Content)
 });
