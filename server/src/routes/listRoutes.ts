@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getLists, getList, createList, updateList, deleteList } from '../controllers/listController';
+  getLists, getList, createList, updateList, deleteList } from '../controllers/listController.js';
 
 const router: Router = Router();
 

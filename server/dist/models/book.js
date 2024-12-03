@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Book = void 0;
-const mongoose_1 = require("mongoose");
-const bookSchema = new mongoose_1.Schema({
+import { Schema, model } from "mongoose";
+const bookSchema = new Schema({
     _id: { type: String, required: true, unique: true }, // Usar ISBN como _id si es necesario
     title: { type: String, required: true },
     author: { type: String, required: true },
@@ -16,5 +13,5 @@ const bookSchema = new mongoose_1.Schema({
     price: { type: Number, required: true },
     image: { type: String, requited: true }
 });
-exports.Book = (0, mongoose_1.model)("Book", bookSchema);
-exports.default = exports.Book;
+export const Book = model("Book", bookSchema);
+export default Book;

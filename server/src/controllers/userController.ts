@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import User from '../models/user';
+import User from '../models/user.js';
 
 const SECRET_KEY = 'bookly_secret_key';
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Purchase from '../models/purchase';
+import Purchase from '../models/purchase.js';
 
 // Obtener todas las compras
 export const getPurchases = async (req: Request, res: Response): Promise<void> => {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Review } from '../models/review';
+import { Review } from '../models/review.js';
 
 // Metodo para obtener todas las reseñas
 export const getReviews = async (req: Request, res: Response): Promise<void> => {

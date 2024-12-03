@@ -1,26 +1,19 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePurchase = exports.updatePurchase = exports.createPurchase = exports.getPurchaseById = exports.getPurchases = void 0;
-const purchase_1 = __importDefault(require("../models/purchase"));
+import Purchase from '../models/purchase.js';
 // Obtener todas las compras
-const getPurchases = async (req, res) => {
+export const getPurchases = async (req, res) => {
     try {
-        const purchases = await purchase_1.default.find();
+        const purchases = await Purchase.find();
         res.status(200).json(purchases);
     }
     catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-exports.getPurchases = getPurchases;
 // Obtener una compra por ID
-const getPurchaseById = async (req, res) => {
+export const getPurchaseById = async (req, res) => {
     try {
         const { id } = req.params;
-        const purchase = await purchase_1.default.findById(id);
+        const purchase = await Purchase.findById(id);
         if (!purchase) {
             res.status(404).json({ message: 'Purchase not found' });
             return;
@@ -31,11 +24,10 @@ const getPurchaseById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-exports.getPurchaseById = getPurchaseById;
 // Crear una nueva compra
-const createPurchase = async (req, res) => {
+export const createPurchase = async (req, res) => {
     try {
-        const newPurchase = new purchase_1.default(req.body);
+        const newPurchase = new Purchase(req.body);
         await newPurchase.save();
         res.status(201).json(newPurchase);
     }
@@ -43,12 +35,11 @@ const createPurchase = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-exports.createPurchase = createPurchase;
 // Actualizar una compra por ID
-const updatePurchase = async (req, res) => {
+export const updatePurchase = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedPurchase = await purchase_1.default.findByIdAndUpdate(id, req.body, {
+        const updatedPurchase = await Purchase.findByIdAndUpdate(id, req.body, {
             new: true, // Devuelve el documento actualizado
             runValidators: true, // Ejecuta validaciones del esquema
         });
@@ -62,12 +53,11 @@ const updatePurchase = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-exports.updatePurchase = updatePurchase;
 // Eliminar una compra por ID
-const deletePurchase = async (req, res) => {
+export const deletePurchase = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedPurchase = await purchase_1.default.findByIdAndDelete(id);
+        const deletedPurchase = await Purchase.findByIdAndDelete(id);
         if (!deletedPurchase) {
             res.status(404).json({ message: 'Purchase not found' });
             return;
@@ -78,4 +68,3 @@ const deletePurchase = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-exports.deletePurchase = deletePurchase;

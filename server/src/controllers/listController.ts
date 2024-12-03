@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import List from '../models/list';
+import List from '../models/list.js';
 
 // Obtener todas las listas de libros
 export const getLists = async (req: Request, res: Response): Promise<void> => {
