@@ -4,6 +4,7 @@ import SignIn from './components/Sign-In.vue';
 import SignUp from './components/Sign-Up.vue';
 import Book from './components/Book.vue';
 import BookList from './components/BookList.vue';
+import ListDetails from './components/ListDetails.vue';
 
 const routes = [
   {
@@ -30,7 +31,13 @@ const routes = [
     path: '/book-list',
     name: 'BookList',
     component: BookList
-  }
+  },
+  {
+    path: '/list/:id',
+    name: 'ListDetails',
+    component: ListDetails,
+  },
+  
 ];
 
 const router = createRouter({

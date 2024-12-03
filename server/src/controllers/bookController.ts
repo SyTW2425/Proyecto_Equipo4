@@ -69,16 +69,24 @@ export const updateBook = async (req: Request, res: Response): Promise<void> => 
 // Eliminar un libro por ISBN
 export const deleteBook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { isbn } = req.params;
-    const deletedBook = await Book.findOneAndDelete({ isbn });
+    const bookId = req.params.id; // Obtén el ID del libro desde los parámetros de la ruta
 
-    if (!deletedBook) {
-      res.status(404).json({ message: 'Book not found' });
+    if (!bookId) {
+      res.status(400).json({ message: "El ID del libro es obligatorio." });
       return;
     }
 
-    res.status(200).json({ message: 'Book deleted successfully', book: deletedBook });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    // Busca y elimina el libro en la base de datos por su _id
+    const deletedBook = await Book.findByIdAndDelete(bookId);
+
+    if (!deletedBook) {
+      res.status(404).json({ message: "Libro no encontrado." });
+      return;
+    }
+
+    res.status(200).json({ message: "Libro eliminado con éxito.", book: deletedBook });
+  } catch (error) {
+    console.error("Error al eliminar el libro:", error);
+    res.status(500).json({ message: "Error al eliminar el libro." });
   }
 };
