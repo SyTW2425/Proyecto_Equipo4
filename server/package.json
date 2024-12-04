@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "mocha --require ts-node/register --recursive tests/**/*.spec.ts",
+    "test": "mocha --require ts-node/register --recursive --exit tests/**/*.spec.ts",
     "start": "node dist/server.js"
   },
   "repository": {
