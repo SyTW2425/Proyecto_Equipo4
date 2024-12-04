@@ -49,11 +49,6 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ message: 'Ruta no encontrada' });
 });
 
-// Inicia el servidor en el puerto 3000
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 //default export
 export default app;

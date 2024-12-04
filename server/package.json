@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha --require ts-node/register --recursive tests/**/*.spec.ts",
-    "start": "node dist/app.js"
+    "start": "node dist/server.js"
   },
   "repository": {
     "type": "git",
