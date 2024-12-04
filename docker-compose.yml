@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+    container_name: server
+    environment:
+      - MONGO_URI=mongodb+srv://yanfri:Yanfri@cluster0.tdrhb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: ./client/bookly
+    container_name: client
+    ports:
+      - "8080:8080"
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
