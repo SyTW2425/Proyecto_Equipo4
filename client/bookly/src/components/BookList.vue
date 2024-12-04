@@ -37,6 +37,12 @@
               >
                 Carrito de Compra
               </router-link>
+              <router-link
+                to="/my-reviews"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+              Mis Reseñas
+              </router-link>
               <button
                 @click="logout"
                 class="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100"

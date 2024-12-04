@@ -5,6 +5,7 @@ import SignUp from './components/Sign-Up.vue';
 import Book from './components/Book.vue';
 import BookList from './components/BookList.vue';
 import ListDetails from './components/ListDetails.vue';
+import MyReviews from './components/MyReviews.vue';
 
 const routes = [
   {
@@ -36,7 +37,12 @@ const routes = [
     path: '/list/:id',
     name: 'ListDetails',
     component: ListDetails,
-  },
+  },  
+  {
+    path: "/my-reviews",
+    name: "MyReviews",
+    component: MyReviews,
+  }
   
 ];
 

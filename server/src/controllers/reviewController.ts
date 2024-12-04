@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Review } from '../models/review.js';
+import mongoose from "mongoose";
 
 // Metodo para obtener todas las reseñas
 export const getReviews = async (req: Request, res: Response): Promise<void> => {
@@ -41,6 +42,9 @@ export const getReviewsByBook = async (req: Request, res: Response): Promise<voi
 };
 
 
+
+
+
 // Metodo para crear una reseña
 export const createReview = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -73,11 +77,37 @@ export const deleteReview = async (req: Request, res: Response): Promise<void> =
 }
 
 // Metodo para obtener todas las reseñas de un usuario
-export const getReviewsByUser = async (req: Request, res: Response): Promise<void> => {
+// export const getReviewsByUser = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const reviews = await Review.find({ user: req.params.id });
+//     res.json(reviews);
+//   } catch (error) {
+//     res.status(400).json(error);
+//   }
+// }
+
+export const getReviewsByUsernameQuery = async (req: Request, res: Response): Promise<void> => {
   try {
-    const reviews = await Review.find({ user: req.params.id });
-    res.json(reviews);
-  } catch (error) {
-    res.status(400).json(error);
+    const username = req.query.username as string; // Obtén el nombre de usuario desde la query string
+
+    if (!username) {
+      res.status(400).json({ message: "El nombre de usuario es obligatorio." });
+      return;
+    }
+
+    // Asegúrate de filtrar por el campo `user` explícitamente
+    const reviews = await Review.find({ user: username });
+
+    if (!reviews || reviews.length === 0) {
+      res.status(404).json({ message: "No se encontraron reseñas para este usuario." });
+      return;
+    }
+
+    res.status(200).json(reviews);
+  } catch (error: any) {
+    console.error("Error al obtener reseñas por usuario:", error.message);
+    res.status(500).json({ message: "Error interno al obtener reseñas por usuario.", error: error.message });
   }
-}
+};
+
+

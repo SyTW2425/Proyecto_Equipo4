@@ -61,7 +61,13 @@
                 to="/book-list"
                 class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-                Lista de Libros
+                Mis Listas
+              </router-link>
+              <router-link
+                to="/my-reviews"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+              Mis Reseñas
               </router-link>
               <button
                 @click="logout"
@@ -75,23 +81,68 @@
       </nav>
     </div>
 
-    <!-- BARRA IZQUIERDA -->
-    <div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
-      <div class="mt-16 p-8">
-        <h2 class="text-lg font-bold underline">Categorías</h2>
-        <ul class="mt-4 space-y-4">
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Libros de autoayuda</a>
-          </li>
-          <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
-            <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">Libros infantiles</a>
-          </li>
-        </ul>
-      </div>
-      <div class="p-4 flex justify-center">
-        <p class="text-sm">© 2024 Bookly</p>
-      </div>
-    </div>
+<!-- BARRA IZQUIERDA -->
+<div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
+  <div class="mt-16 p-8">
+    <h2 class="text-lg font-bold underline">Categorías</h2>
+    <ul class="mt-4 space-y-4">
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Libros de autoayuda
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Libros infantiles
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Ciencia ficción
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Misterio y suspense
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Fantasía épica
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Novelas románticas
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Historia
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Biografías
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Literatura clásica
+        </a>
+      </li>
+      <li class="transition-transform ease-in-out duration-300 hover:translate-x-2">
+        <a href="#" class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg">
+          Desarrollo personal
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="p-4 flex justify-center">
+    <p class="text-sm">© 2024 Bookly</p>
+  </div>
+</div>
+
 
     <!-- PANTALLA CENTRAL -->
     <div class="ml-64 mt-[4vh] px-8 flex flex-col items-center z-10">
