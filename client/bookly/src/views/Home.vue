@@ -165,7 +165,12 @@
             />
             <!-- Opciones flotantes -->
             <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
-              <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Comprar</button>
+              <button 
+  @click="addToCart(book)" 
+  class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+>
+  Comprar
+</button> 
               <router-link :to="`/book/${book._id}`" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-center">Ver Reseñas</router-link>
               <button @click="openListMenu(book._id)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Añadir a Lista</button>
             </div>
@@ -253,11 +258,12 @@ export default {
       this.showListMenu = false;
     },
     logout() {
-      localStorage.removeItem("authToken");
-      this.user = null;
-      this.showMenu = false;
-      this.$router.push("/sign-in");
-    },
+  localStorage.removeItem("authToken");
+  this.user = null;
+  this.cartItems = []; // Limpia el carrito
+  this.showMenu = false;
+  this.$router.push("/sign-in");
+},
     async addBookToList(listId) {
   try {
     // Comprueba si el libro ya está en la lista
@@ -282,17 +288,41 @@ export default {
   }
 }
 ,
-    async fetchUser() {
-      try {
-        const response = await axios.get("http://localhost:3000/user", {
-          headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
-        });
-        this.user = response.data.user;
-        await this.fetchLists();
-      } catch (error) {
-        console.error("Error al obtener el usuario:", error.response || error.message);
-      }
-    },
+async addToCart(book) {
+  try {
+    // Verifica si el usuario está autenticado
+    if (!this.user || !this.user._id) {
+      alert("Por favor, inicia sesión para añadir libros al carrito.");
+      return;
+    }
+
+    // Realiza una solicitud al backend para añadir el libro al carrito
+    await axios.post(`http://localhost:3000/cart/${this.user._id}/add`, {
+      bookId: book._id,
+      quantity: 1, // Asegúrate de enviar una cantidad
+    });
+
+    alert("Libro añadido al carrito.");
+  } catch (error) {
+    console.error("Error al añadir al carrito:", error.response || error.message);
+    alert("Hubo un error al añadir el libro al carrito.");
+  }
+}
+
+,
+async fetchUser() {
+  try {
+    const response = await axios.get("http://localhost:3000/user", {
+      headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
+    });
+    this.user = response.data.user;
+
+    // Opcional: si necesitas cargar datos del carrito al inicio
+    await this.fetchLists();
+  } catch (error) {
+    console.error("Error al obtener el usuario:", error.response || error.message);
+  }
+},
   },
   async mounted() {
     await this.fetchBooks();

@@ -8,6 +8,7 @@ import { verifyToken, getUser } from './controllers/userController.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
 import listRoutes from './routes/listRoutes.js';
+import cartRoutes from './routes/cartRoutes.js'
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/books', bookRoutes);
 app.use('/lists', listRoutes);
+app.use('/cart', cartRoutes)
 
 // Aplicar verifyToken solo en rutas específicas
 app.get('/user', verifyToken, getUser); // Solo aquí verificamos el token
