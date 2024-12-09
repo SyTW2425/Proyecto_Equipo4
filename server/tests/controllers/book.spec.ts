@@ -9,7 +9,7 @@ describe('Book Controller', () => {
   // Test para crear un nuevo libro
   it('debería crear un nuevo libro', (done) => {
     const newBook = {
-      _id: '978-3-16-148410-0', // Ejemplo de ISBN como _id
+      _id: '123-6-16-17840-1', // Ejemplo de ISBN como _id
       title: 'The Great Gatsby',
       author: 'F. Scott Fitzgerald',
       description: 'A novel set in the Jazz Age that critiques the American Dream.',
