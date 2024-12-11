@@ -12,9 +12,7 @@ describe('List Controller', () => {
 
   before(async () => {
     try {
-         // Limpia las colecciones necesarias
-    await mongoose.connection.collection('users').deleteMany({});
-    await mongoose.connection.collection('books').deleteMany({});
+         
       const userResponse = await request(app)
         .post('/users/register')
         .send({
@@ -44,7 +42,7 @@ describe('List Controller', () => {
             price: 15.99,
             image: 'http://example.com/gatsby.jpg',
         });
-      //console.log(bookResponse.body); // Verifica que el libro se haya creado correctamente
+      
       expect(bookResponse.status).to.equal(201);
       bookId = bookResponse.body._id;
       userId = userResponse.body._id;  // Guarda el userId
@@ -147,5 +145,25 @@ it('debería crear una nueva lista', async () => {
         expect(res.body).to.have.property('message', 'Lista eliminada exitosamente.');
         done();
       });
+  });
+
+  after(async () => {
+    try {
+      // Eliminar el libro creado usando la función definida
+    await request(app)
+    .delete(`/books/${bookId}`) // Utilizamos la ruta implementada para eliminar el libro
+    .expect(200)
+    .catch(err => console.error('Error al eliminar el libro:', err));
+  
+      // Validar y convertir `userId` si es un ObjectId válido
+      if (mongoose.Types.ObjectId.isValid(userId)) {
+        const userIdObject = new mongoose.Types.ObjectId(userId);
+        await mongoose.connection.collection('users').deleteOne({ _id: userIdObject });
+      } else {
+        console.error('userId no es un ObjectId válido:', userId);
+      }
+    } catch (error) {
+      console.error('Error al limpiar la base de datos:', error);
+    }
   });
 });

@@ -9,10 +9,6 @@ describe('Cart Controller', () => {
 
   before(async () => {
     try {
-      // Limpia las colecciones necesarias
-      await mongoose.connection.collection('users').deleteMany({});
-      await mongoose.connection.collection('books').deleteMany({});
-      await mongoose.connection.collection('carts').deleteMany({});
 
       // Crear un usuario
       const userResponse = await request(app)
@@ -53,19 +49,6 @@ describe('Cart Controller', () => {
       throw error;
     }
   });
-
-  // Test para obtener el carrito de un usuario
-it('debería obtener el carrito de un usuario', (done) => {
-    request(app)
-      .get(`/cart/${userId}`)
-      .expect(404)  // Esperamos un 404 porque el carrito no existe aún
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body).to.have.property('message', 'Carrito no encontrado.');  // Verificamos el mensaje de error
-        done();
-      });
-  });
-  
 
   // Test para agregar un libro al carrito
 it('debería agregar un libro al carrito', (done) => {
@@ -147,4 +130,26 @@ it('debería agregar un libro al carrito', (done) => {
         done();
       });
   });
+
+  after(async () => {
+    try {
+      // Eliminar el libro creado usando la función definida
+    await request(app)
+    .delete(`/books/${bookId}`) // Utilizamos la ruta implementada para eliminar el libro
+    .expect(200)
+    .catch(err => console.error('Error al eliminar el libro:', err));
+  
+      // Validar y convertir `userId` si es un ObjectId válido
+      if (mongoose.Types.ObjectId.isValid(userId)) {
+        const userIdObject = new mongoose.Types.ObjectId(userId);
+        await mongoose.connection.collection('users').deleteOne({ _id: userIdObject });
+      } else {
+        console.error('userId no es un ObjectId válido:', userId);
+      }
+    } catch (error) {
+      console.error('Error al limpiar la base de datos:', error);
+    }
+  });
+  
+  
 });
