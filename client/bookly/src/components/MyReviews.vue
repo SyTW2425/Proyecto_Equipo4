@@ -30,12 +30,6 @@
               class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
             >
               <router-link
-                to="/cart"
-                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Carrito de Compra
-              </router-link>
-              <router-link
                 to="/book-list"
                 class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
@@ -72,7 +66,7 @@
           class="border border-gray-300 p-4 rounded shadow"
         >
           <h3 class="text-xl font-bold">{{ review.title }}</h3>
-          <p class="text-sm text-gray-600 mb-2">Libro: {{ review.bookTitle }}</p>
+          <p class="text-sm text-gray-600 mb-2">Libro: {{ review.bookTitle || "Título no disponible" }}</p>
           <p class="text-sm text-gray-600 mb-2">Calificación: {{ review.rating }}/5</p>
           <p class="text-gray-800">{{ review.description }}</p>
           <p class="text-gray-500 text-sm mt-2">Publicado: {{ formatDate(review.created) }}</p>
@@ -112,7 +106,7 @@ export default {
 
         // Obtener títulos de libros
         const bookRequests = reviews.map((review) =>
-          axios.get(`http://localhost:3000/books/${review.book}`)
+          axios.get(`http://localhost:3000/books/${review.book}`).catch(() => null)
         );
 
         const bookResponses = await Promise.all(bookRequests);
@@ -120,7 +114,7 @@ export default {
         // Asigna los títulos de los libros a las reseñas
         this.reviews = reviews.map((review, index) => ({
           ...review,
-          bookTitle: bookResponses[index].data.title,
+          bookTitle: bookResponses[index]?.data?.title || "Título no disponible",
         }));
       } catch (error) {
         console.error("Error al obtener las reseñas del usuario:", error.response || error.message);
