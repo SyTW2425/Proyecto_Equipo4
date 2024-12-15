@@ -10,6 +10,14 @@
 
     <!-- CONTENIDO -->
     <div class="pt-16 px-8">
+      <!-- Notificación -->
+      <div
+        v-if="notification.message"
+        :class="['fixed bottom-4 right-4 p-4 rounded shadow-lg', notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white']"
+      >
+        {{ notification.message }}
+      </div>
+
       <div v-if="isLoading" class="text-center mt-8">
         <p class="text-gray-600">Cargando lista...</p>
       </div>
@@ -55,9 +63,16 @@ export default {
       list: null, // Detalles de la lista
       books: [], // Detalles de los libros en la lista
       isLoading: true, // Indicador de carga
+      notification: { message: "", type: "" }, // Notificación dinámica
     };
   },
   methods: {
+    showNotification(message, type) {
+      this.notification = { message, type };
+      setTimeout(() => {
+        this.notification = { message: "", type: "" };
+      }, 3000);
+    },
     async fetchListDetails() {
       try {
         const listId = this.$route.params.id; // ID de la lista desde la ruta
@@ -84,22 +99,20 @@ export default {
         const listId = this.$route.params.id; // ID de la lista desde la ruta
 
         // Realiza la solicitud al backend para eliminar el libro
-        const response = await axios.patch("http://localhost:3000/lists/remove-book", {
+        await axios.patch("http://localhost:3000/lists/remove-book", {
           listId,
           bookId,
         });
-
-        // Verifica la respuesta del backend
-        console.log("Respuesta del servidor:", response.data);
 
         // Actualiza la lista y libros localmente
         this.list.history = this.list.history.filter((id) => id !== bookId);
         this.books = this.books.filter((book) => book._id !== bookId);
 
-        alert("Libro eliminado de la lista correctamente.");
+        // Muestra una notificación de éxito
+        this.showNotification("Libro eliminado de la lista correctamente.", "success");
       } catch (error) {
         console.error("Error al eliminar el libro de la lista:", error.response || error.message);
-        alert("Hubo un error al eliminar el libro de la lista.");
+        this.showNotification("Hubo un error al eliminar el libro de la lista.", "error");
       }
     },
   },

@@ -18,8 +18,14 @@
 
       <!-- BARRA DE BÚSQUEDA -->
       <div class="flex items-center bg-white text-black rounded-full px-4 py-2 w-1/3">
-        <input type="text" placeholder="Buscar..." class="flex-grow bg-transparent outline-none px-2" />
-        <button class="text-emerald-600 hover:text-emerald-800">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Buscar..."
+          class="flex-grow bg-transparent outline-none px-2"
+          @keyup.enter="searchBook"
+        />
+        <button @click="searchBook" class="text-emerald-600 hover:text-emerald-800">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path
               fill-rule="evenodd"
@@ -143,7 +149,6 @@
   </div>
 </div>
 
-
     <!-- PANTALLA CENTRAL -->
     <div class="ml-64 mt-[4vh] px-8 flex flex-col items-center z-10">
       <!-- Encabezado de Libros Más Vendidos -->
@@ -152,7 +157,7 @@
       <!-- Contenedor de Libros -->
       <div class="grid grid-cols-3 gap-8 mt-8">
         <div
-          v-for="book in books"
+          v-for="book in paginatedBooks"
           :key="book._id"
           class="relative group bg-white p-4 shadow-lg rounded-lg"
         >
@@ -186,6 +191,25 @@
           </div>
         </div>
       </div>
+
+      <!-- Controles de Paginación -->
+      <div class="flex justify-center mt-8 space-x-4">
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span class="px-4 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
+        >
+          Siguiente
+        </button>
+      </div>
     </div>
 
     <!-- Modal para seleccionar lista -->
@@ -211,6 +235,11 @@
       </div>
     </div>
   </div>
+
+  <div v-if="notification.message" 
+     :class="['fixed bottom-4 right-4 p-4 rounded shadow-lg', notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white']">
+  {{ notification.message }}
+</div>
 </template>
 
 <script>
@@ -226,9 +255,39 @@ export default {
       showListMenu: false,
       selectedBookId: null,
       lists: [],
+      currentPage: 1,
+      booksPerPage: 9, // Número de libros por página
+      searchQuery: "", // Query de búsqueda
+      notification: { message: "", type: "" }, // Notificación dinámica
     };
   },
+  computed: {
+    paginatedBooks() {
+      const startIndex = (this.currentPage - 1) * this.booksPerPage;
+      const endIndex = startIndex + this.booksPerPage;
+      return this.books.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.books.length / this.booksPerPage);
+    },
+  },
   methods: {
+    showNotification(message, type) {
+      this.notification = { message, type };
+      setTimeout(() => {
+        this.notification = { message: "", type: "" };
+      }, 3000);
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
     async fetchBooks() {
       try {
         const response = await axios.get("http://localhost:3000/books");
@@ -238,14 +297,13 @@ export default {
       }
     },
     async fetchLists() {
-  try {
-    // Asegúrate de usar el userId del usuario autenticado
-    const response = await axios.get(`http://localhost:3000/lists/user/${this.user._id}`);
-    this.lists = response.data; // Asigna las listas del usuario
-  } catch (error) {
-    console.error("Error al obtener las listas del usuario:", error.response || error.message);
-  }
-},
+      try {
+        const response = await axios.get(`http://localhost:3000/lists/user/${this.user._id}`);
+        this.lists = response.data; // Asigna las listas del usuario
+      } catch (error) {
+        console.error("Error al obtener las listas del usuario:", error.response || error.message);
+      }
+    },
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
@@ -258,79 +316,87 @@ export default {
       this.showListMenu = false;
     },
     logout() {
-  localStorage.removeItem("authToken");
-  this.user = null;
-  this.cartItems = []; // Limpia el carrito
-  this.showMenu = false;
-  this.$router.push("/sign-in");
-},
+      localStorage.removeItem("authToken");
+      this.user = null;
+      this.cartItems = []; // Limpia el carrito
+      this.showMenu = false;
+      this.$router.push("/sign-in");
+    },
     async addBookToList(listId) {
-  try {
-    // Comprueba si el libro ya está en la lista
-    const list = this.lists.find((list) => list._id === listId);
-    if (list && list.history.includes(this.selectedBookId)) {
-      alert("Este libro ya está incluido en la lista.");
-      this.closeListMenu();
-      return;
-    }
+      try {
+        const list = this.lists.find((list) => list._id === listId);
+        if (list && list.history.includes(this.selectedBookId)) {
+          this.showNotification("Este libro ya está incluido en la lista.", "error");
+          this.closeListMenu();
+          return;
+        }
 
-    // Si no está, realiza la solicitud para añadir el libro
-    await axios.post(`http://localhost:3000/lists/add-book`, {
-      listId,
-      bookId: this.selectedBookId,
-    });
+        await axios.post(`http://localhost:3000/lists/add-book`, {
+          listId,
+          bookId: this.selectedBookId,
+        });
 
-    alert("Libro añadido a la lista correctamente.");
-    this.closeListMenu();
-  } catch (error) {
-    console.error("Error al añadir libro a la lista:", error.response || error.message);
-    alert("El libro ya se encuentra añadido a la lista.");
-  }
-}
-,
-async addToCart(book) {
-  try {
-    // Verifica si el usuario está autenticado
-    if (!this.user || !this.user._id) {
-      alert("Por favor, inicia sesión para añadir libros al carrito.");
-      return;
-    }
+        this.showNotification("Libro añadido a la lista correctamente.", "success");
+        this.closeListMenu();
+      } catch (error) {
+        console.error("Error al añadir libro a la lista:", error.response || error.message);
+        this.showNotification("Error al añadir el libro a la lista.", "error");
+      }
+    },
+    async addToCart(book) {
+      try {
+        if (!this.user || !this.user._id) {
+          this.showNotification("Por favor, inicia sesión para añadir libros al carrito.", "error");
+          return;
+        }
 
-    // Realiza una solicitud al backend para añadir el libro al carrito
-    await axios.post(`http://localhost:3000/cart/${this.user._id}/add`, {
-      bookId: book._id,
-      quantity: 1, // Asegúrate de enviar una cantidad
-    });
+        await axios.post(`http://localhost:3000/cart/${this.user._id}/add`, {
+          bookId: book._id,
+          quantity: 1, // Asegúrate de enviar una cantidad
+        });
 
-    alert("Libro añadido al carrito.");
-  } catch (error) {
-    console.error("Error al añadir al carrito:", error.response || error.message);
-    alert("Hubo un error al añadir el libro al carrito.");
-  }
-}
+        this.showNotification("Libro añadido al carrito.", "success");
+      } catch (error) {
+        console.error("Error al añadir al carrito:", error.response || error.message);
+        this.showNotification("Hubo un error al añadir el libro al carrito.", "error");
+      }
+    },
+    async fetchUser() {
+      try {
+        const response = await axios.get("http://localhost:3000/user", {
+          headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
+        });
+        this.user = response.data.user;
 
-,
-async fetchUser() {
-  try {
-    const response = await axios.get("http://localhost:3000/user", {
-      headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
-    });
-    this.user = response.data.user;
+        await this.fetchLists();
+      } catch (error) {
+        console.error("Error al obtener el usuario:", error.response || error.message);
+      }
+    },
+    async searchBook() {
+      try {
+        const searchResult = this.books.find(book =>
+          book.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
 
-    // Opcional: si necesitas cargar datos del carrito al inicio
-    await this.fetchLists();
-  } catch (error) {
-    console.error("Error al obtener el usuario:", error.response || error.message);
-  }
-},
+        if (searchResult) {
+          this.$router.push(`/book/${searchResult._id}`);
+        } else {
+          this.showNotification("No se encontró ningún libro con ese título.", "error");
+        }
+      } catch (error) {
+        console.error("Error en la búsqueda:", error.response || error.message);
+      }
+    },
   },
   async mounted() {
     await this.fetchBooks();
     await this.fetchUser();
   },
-
 };
 </script>
+
+
 
 <style>
 /* Personaliza los estilos */
