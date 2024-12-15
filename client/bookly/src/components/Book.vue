@@ -7,6 +7,27 @@
     <span class="text-xl font-semibold ml-2">Bookly</span>
   </router-link>
 
+  <!-- BARRA DE BÚSQUEDA -->
+  <div class="flex items-center bg-white text-black rounded-full px-4 py-2 w-1/3">
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Buscar..."
+      class="flex-grow bg-transparent outline-none px-2"
+      @keyup.enter="searchBook"
+    />
+    <button @click="searchBook" class="text-emerald-600 hover:text-emerald-800">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path
+          fill-rule="evenodd"
+          d="M8 4a4 4 0 100 8 4 4 0 000-8zm-7 4a7 7 0 1114 0 7 7 0 01-14 0zm14.707 6.293a1 1 0 00-1.414 0l-2.83 2.829a1 1 0 001.415 1.415l2.83-2.829a1 1 0 000-1.415z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+  </div>
+
+
   <!-- Usuario y menú -->
   <nav>
     <ul class="flex items-center space-x-4">
@@ -54,26 +75,30 @@
 </div>
 
 
-    <!-- BARRA IZQUIERDA -->
-    <div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
-      <!-- Contenido superior -->
-      <div class="mt-8 p-16">
-        <h2 class="text-lg font-bold underline">Categorías</h2>
-        <ul class="mt-4 space-y-2">
-          <li><a href="#" class="hover:text-gray-400">Libros de autoayuda</a></li>
-          <li><a href="#" class="hover:text-gray-400">Libros infantiles</a></li>
-          <li><a href="#" class="hover:text-gray-400">Fantasía</a></li>
-          <li><a href="#" class="hover:text-gray-400">Historia</a></li>
-          <li><a href="#" class="hover:text-gray-400">Libros prácticos</a></li>
-          <li><a href="#" class="hover:text-gray-400">Literatura</a></li>
-          <li><a href="#" class="hover:text-gray-400">Novedades</a></li>
-        </ul>
-      </div>
-      <!-- Contenido inferior -->
-      <div class="p-4 flex justify-start">
-        <p class="text-sm">© 2024 Mi Web</p>
-      </div>
-    </div>
+ <!-- BARRA IZQUIERDA -->
+<div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
+  <div class="mt-16 p-8">
+    <h2 class="text-lg font-bold underline">Categorías</h2>
+    <ul class="mt-4 space-y-4">
+      <li
+        v-for="category in categories"
+        :key="category"
+        class="transition-transform ease-in-out duration-300 hover:translate-x-2"
+      >
+        <router-link
+          :to="`/category/${category}`"
+          class="block py-4 text-center w-full border-b border-transparent hover:border-white hover:bg-emerald-700 rounded-lg"
+        >
+          {{ category }}
+        </router-link>
+      </li>
+    </ul>
+  </div>
+  <div class="p-4 flex justify-center">
+    <p class="text-sm">© 2024 Bookly</p>
+  </div>
+</div>
+
 
     <!-- PANTALLA CENTRAL -->
     <div v-if="isLoading" class="flex justify-center items-center mt-32">
@@ -199,7 +224,7 @@ export default {
       bookId: this.$route.params.id,
       reviews: [],
       review: {
-        user: null, // El usuario logeado se asignará aquí
+        user: null, // Usuario logeado
         book: this.$route.params.id,
         title: "",
         description: "",
@@ -208,7 +233,22 @@ export default {
       mensajeExito: false,
       isLoading: true,
       currentUser: null, // Usuario actualmente logeado
-      showMenu: false, // Controla la visibilidad del menú desplegable
+      showMenu: false, // Menú desplegable
+      categories: [
+        "Manga",
+        "Misterio",
+        "Detectives",
+        "Clásicos",
+        "Drama",
+        "Ciencia Ficción",
+        "Romance",
+        "Fantasía",
+        "Juvenil",
+        "Aventura",
+      ],
+      searchQuery: "", // Query para la barra de búsqueda
+    books: [], // Lista de libros cargados
+    notification: { message: "", type: "" }, // Notificaciones dinámicas
     };
   },
   watch: {
@@ -221,15 +261,6 @@ export default {
     },
   },
   methods: {
-    toggleMenu() {
-      this.showMenu = !this.showMenu; // Alterna el estado del menú
-    },
-    logout() {
-      localStorage.removeItem("authToken");
-      this.user = null;
-      this.showMenu = false;
-      this.$router.push("/sign-in");
-    },
     async loadBookDetails() {
       try {
         this.isLoading = true;
@@ -297,10 +328,55 @@ export default {
         this.currentUser = null;
       }
     },
+    async fetchBooks() {
+  try {
+    const response = await axios.get("http://localhost:3000/books");
+    this.books = response.data; // Asigna los datos a `books`
+  } catch (error) {
+    console.error("Error al obtener los libros:", error.response || error.message);
+  }
+},
+showNotification(message, type) {
+  this.notification = { message, type };
+  setTimeout(() => {
+    this.notification = { message: "", type: "" };
+  }, 3000);
+},
+
+
+    async searchBook() {
+  try {
+    // Busca en los libros disponibles si coincide con el query de búsqueda
+    const searchResult = this.books.find((book) =>
+      book.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+
+    if (searchResult) {
+      // Navega al detalle del libro si lo encuentra
+      this.$router.push(`/book/${searchResult._id}`);
+    } else {
+      this.showNotification("No se encontró ningún libro con ese título.", "error");
+    }
+  } catch (error) {
+    console.error("Error en la búsqueda:", error.response || error.message);
+    this.showNotification("Error en la búsqueda.", "error");
+  }
+},
+    toggleMenu() {
+      this.showMenu = !this.showMenu;
+    },
+    logout() {
+      localStorage.removeItem("authToken");
+      this.user = null;
+      this.showMenu = false;
+      this.$router.push("/sign-in");
+    },
   },
   async mounted() {
     await this.fetchCurrentUser();
     this.loadBookDetails();
+    await this.fetchBooks(); // Carga los libros al iniciar el componente
   },
 };
 </script>
+

@@ -7,6 +7,7 @@ import BookList from './components/BookList.vue';
 import ListDetails from './components/ListDetails.vue';
 import MyReviews from './components/MyReviews.vue';
 import ShoppingCart from './components/ShoppingCart.vue';
+import CategoryView from './components/CategoryView.vue';
 
 const routes = [
   {
@@ -48,7 +49,13 @@ const routes = [
     path: '/cart',
     name: 'Cart',
     component: ShoppingCart,
-  }  
+  },
+  {
+    path: "/category/:category",
+    name: "CategoryView",
+    component: CategoryView,
+    props: true,
+  }
 ];
 
 const router = createRouter({

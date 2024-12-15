@@ -1,12 +1,5 @@
 <template>
   <div>
-    <!-- VÍDEO AL PRINCIPIO -->
-    <div class="relative w-full h-[100vh]">
-      <video class="w-full h-full object-cover" autoplay loop muted>
-        <source src="../assets/clip_cabecera_inicio.mp4" type="video/mp4" />
-      </video>
-    </div>
-
     <!-- BARRA SUPERIOR -->
     <div class="bg-emerald-600 text-white py-4 px-6 flex justify-between items-center fixed top-0 left-0 w-full shadow-md z-50">
       <div class="flex items-center space-x-4">
@@ -17,7 +10,7 @@
       </div>
 
       <!-- BARRA DE BÚSQUEDA -->
-      <div class="flex items-center bg-white text-black rounded-full px-4 py-2 w-1/3">
+      <div class="flex items-center bg-white text-black rounded-full px-4 py-2 w-1/3 justify-center">
         <input
           v-model="searchQuery"
           type="text"
@@ -36,6 +29,7 @@
         </button>
       </div>
 
+      <!-- MENÚ DEL USUARIO -->
       <nav>
         <ul>
           <li v-if="!user">
@@ -73,7 +67,7 @@
                 to="/my-reviews"
                 class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-              Mis Reseñas
+                Mis Reseñas
               </router-link>
               <button
                 @click="logout"
@@ -87,8 +81,8 @@
       </nav>
     </div>
 
-   <!-- BARRA IZQUIERDA -->
-   <div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
+    <!-- BARRA IZQUIERDA -->
+    <div class="bg-emerald-600 w-64 h-screen fixed top-0 left-0 text-white flex flex-col justify-between">
       <div class="mt-16 p-8">
         <h2 class="text-lg font-bold underline">Categorías</h2>
         <ul class="mt-4 space-y-4">
@@ -106,24 +100,25 @@
           </li>
         </ul>
       </div>
-      <div class="p-4 flex justify-center">
-        <p class="text-sm">© 2024 Bookly</p>
-      </div>
     </div>
 
     <!-- PANTALLA CENTRAL -->
-    <div class="ml-64 mt-[4vh] px-8 flex flex-col items-center z-10">
-      <!-- Encabezado de Libros Más Vendidos -->
-      <h2 class="text-4xl font-bold text-gray-800 mt-4 mb-8 underline">Libros más vendidos</h2>
+    <div class="ml-64 pt-[70px] px-8">
+      <!-- Encabezado de Categoría -->
+      <h2 class="text-4xl font-bold text-gray-800 mt-4 mb-8 underline text-center">
+        Categoría: {{ category }}
+      </h2>
 
       <!-- Contenedor de Libros -->
+      <div v-if="filteredBooks.length === 0" class="text-gray-600 text-center">
+        <p>No hay libros disponibles en esta categoría.</p>
+      </div>
       <div class="grid grid-cols-3 gap-8 mt-8">
         <div
-          v-for="book in paginatedBooks"
+          v-for="book in filteredBooks"
           :key="book._id"
           class="relative group bg-white p-4 shadow-lg rounded-lg"
         >
-          <!-- Imagen del libro -->
           <div class="relative w-[150px] h-[200px] mx-auto">
             <img
               :src="book.image"
@@ -132,45 +127,32 @@
             />
             <!-- Opciones flotantes -->
             <div class="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
-              <button 
-  @click="addToCart(book)" 
-  class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
->
-  Comprar
-</button> 
-              <router-link :to="`/book/${book._id}`" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-center">Ver Reseñas</router-link>
-              <button @click="openListMenu(book._id)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Añadir a Lista</button>
+              <button
+                @click="addToCart(book)"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Comprar
+              </button>
+              <router-link
+                :to="`/book/${book._id}`"
+                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 text-center"
+              >
+                Ver Reseñas
+              </router-link>
+              <button
+                @click="openListMenu(book._id)"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Añadir a Lista
+              </button>
             </div>
           </div>
-
-          <!-- Información del libro -->
           <div class="mt-4 text-center">
-            <h3 class="text-xl font-semibold text-blue-800">
-              <router-link :to="`/book/${book._id}`">{{ book.title }}</router-link>
-            </h3>
+            <h3 class="text-xl font-semibold text-blue-800">{{ book.title }}</h3>
             <p class="text-sm text-gray-700">{{ book.author }}</p>
             <p class="text-sm font-bold text-gray-800">{{ book.price.toFixed(2) }}€</p>
           </div>
         </div>
-      </div>
-
-      <!-- Controles de Paginación -->
-      <div class="flex justify-center mt-8 space-x-4">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
-        >
-          Anterior
-        </button>
-        <span class="px-4 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50"
-        >
-          Siguiente
-        </button>
       </div>
     </div>
 
@@ -196,31 +178,29 @@
         </button>
       </div>
     </div>
-  </div>
 
-  <div v-if="notification.message" 
-     :class="['fixed bottom-4 right-4 p-4 rounded shadow-lg', notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white']">
-  {{ notification.message }}
-</div>
+    <!-- Notificación -->
+    <div
+      v-if="notification.message"
+      :class="[
+        'fixed bottom-4 right-4 p-4 rounded shadow-lg',
+        notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white',
+      ]"
+    >
+      {{ notification.message }}
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
-  name: "Home",
+  props: ["category"], // Categoría seleccionada
   data() {
     return {
       books: [],
-      user: null,
-      showMenu: false,
-      showListMenu: false,
-      selectedBookId: null,
-      lists: [],
-      currentPage: 1,
-      booksPerPage: 9, // Número de libros por página
-      searchQuery: "", // Query de búsqueda
-      notification: { message: "", type: "" }, // Notificación dinámica
+      filteredBooks: [],
       categories: [
         "Manga",
         "Misterio",
@@ -232,40 +212,24 @@ export default {
         "Fantasía",
         "Juvenil",
         "Aventura",
-      ], // Categorías basadas en los libros proporcionados
+      ],
+      searchQuery: "",
+      user: null,
+      showMenu: false,
+      showListMenu: false,
+      selectedBookId: null,
+      lists: [],
+      notification: { message: "", type: "" },
     };
   },
-  computed: {
-    paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * this.booksPerPage;
-      const endIndex = startIndex + this.booksPerPage;
-      return this.books.slice(startIndex, endIndex);
-    },
-    totalPages() {
-      return Math.ceil(this.books.length / this.booksPerPage);
-    },
-  },
   methods: {
-    showNotification(message, type) {
-      this.notification = { message, type };
-      setTimeout(() => {
-        this.notification = { message: "", type: "" };
-      }, 3000);
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
     async fetchBooks() {
       try {
         const response = await axios.get("http://localhost:3000/books");
         this.books = response.data;
+        this.filteredBooks = this.books.filter((book) =>
+          book.categories.includes(this.category)
+        );
       } catch (error) {
         console.error("Error al obtener los libros:", error.response || error.message);
       }
@@ -273,13 +237,27 @@ export default {
     async fetchLists() {
       try {
         const response = await axios.get(`http://localhost:3000/lists/user/${this.user._id}`);
-        this.lists = response.data; // Asigna las listas del usuario
+        this.lists = response.data;
       } catch (error) {
-        console.error("Error al obtener las listas del usuario:", error.response || error.message);
+        console.error("Error al obtener las listas:", error.response || error.message);
       }
     },
-    toggleMenu() {
-      this.showMenu = !this.showMenu;
+    async addToCart(book) {
+      try {
+        if (!this.user || !this.user._id) {
+          this.showNotification("Por favor, inicia sesión para añadir al carrito.", "error");
+          return;
+        }
+
+        await axios.post(`http://localhost:3000/cart/${this.user._id}/add`, {
+          bookId: book._id,
+          quantity: 1,
+        });
+        this.showNotification("Libro añadido al carrito.", "success");
+      } catch (error) {
+        this.showNotification("Error al añadir al carrito.", "error");
+        console.error(error.message);
+      }
     },
     openListMenu(bookId) {
       this.selectedBookId = bookId;
@@ -289,50 +267,37 @@ export default {
       this.selectedBookId = null;
       this.showListMenu = false;
     },
-    logout() {
-      localStorage.removeItem("authToken");
-      this.user = null;
-      this.showMenu = false;
-      this.$router.push("/sign-in");
-    },
     async addBookToList(listId) {
       try {
-        const list = this.lists.find((list) => list._id === listId);
-        if (list && list.history.includes(this.selectedBookId)) {
-          this.showNotification("Este libro ya está incluido en la lista.", "error");
-          this.closeListMenu();
-          return;
-        }
-
         await axios.post(`http://localhost:3000/lists/add-book`, {
           listId,
           bookId: this.selectedBookId,
         });
-
         this.showNotification("Libro añadido a la lista correctamente.", "success");
         this.closeListMenu();
       } catch (error) {
-        console.error("Error al añadir libro a la lista:", error.response || error.message);
         this.showNotification("Error al añadir el libro a la lista.", "error");
+        console.error(error.message);
       }
     },
-    async addToCart(book) {
-      try {
-        if (!this.user || !this.user._id) {
-          this.showNotification("Por favor, inicia sesión para añadir libros al carrito.", "error");
-          return;
-        }
-
-        await axios.post(`http://localhost:3000/cart/${this.user._id}/add`, {
-          bookId: book._id,
-          quantity: 1, // Asegúrate de enviar una cantidad
-        });
-
-        this.showNotification("Libro añadido al carrito.", "success");
-      } catch (error) {
-        console.error("Error al añadir al carrito:", error.response || error.message);
-        this.showNotification("Hubo un error al añadir el libro al carrito.", "error");
+    toggleMenu() {
+      this.showMenu = !this.showMenu;
+    },
+    async searchBook() {
+      const result = this.books.find((book) =>
+        book.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+      if (result) {
+        this.$router.push(`/book/${result._id}`);
+      } else {
+        this.showNotification("No se encontraron resultados.", "error");
       }
+    },
+    showNotification(message, type) {
+      this.notification = { message, type };
+      setTimeout(() => {
+        this.notification = { message: "", type: "" };
+      }, 3000);
     },
     async fetchUser() {
       try {
@@ -346,31 +311,27 @@ export default {
         console.error("Error al obtener el usuario:", error.response || error.message);
       }
     },
-    async searchBook() {
-      try {
-        const searchResult = this.books.find(book =>
-          book.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-
-        if (searchResult) {
-          this.$router.push(`/book/${searchResult._id}`);
-        } else {
-          this.showNotification("No se encontró ningún libro con ese título.", "error");
-        }
-      } catch (error) {
-        console.error("Error en la búsqueda:", error.response || error.message);
-      }
+    logout() {
+      localStorage.removeItem("authToken");
+      this.user = null;
+      this.showMenu = false;
+      this.$router.push("/sign-in");
+    },
+  },
+  watch: {
+    category: {
+      immediate: true,
+      handler() {
+        this.fetchBooks();
+      },
     },
   },
   async mounted() {
-    await this.fetchBooks();
     await this.fetchUser();
+    await this.fetchBooks();
   },
 };
 </script>
-
-
-
 
 <style>
 /* Personaliza los estilos */

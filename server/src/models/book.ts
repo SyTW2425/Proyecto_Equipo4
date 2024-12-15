@@ -1,10 +1,10 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface BookDocumentInterface extends Document {
-  _id: string; // _id es el identificador único
+  _id: string; // _id es el identificador único (ISBN)
   title: string;
   author: string;
-  description: string;
+  description?: string;
   publisher: string;
   year: number;
   binding: string;
@@ -13,21 +13,23 @@ export interface BookDocumentInterface extends Document {
   language: string;
   price: number;
   image: string;
+  categories: string[]; // Array de categorías
 }
 
 const bookSchema = new Schema<BookDocumentInterface>({
   _id: { type: String, required: true, unique: true }, // Usar ISBN como _id si es necesario
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  description: { type: String, required: false },
-  publisher: { type: String, required: true },
-  year: { type: Number, required: true },
-  binding: { type: String, required: true },
-  pages: { type: Number, required: true },
-  dimensions: { type: String, required: true},
-  language: { type: String, required: true},
-  price: { type: Number, required: true},
-  image: { type: String, requited: true}
+  title: { type: String, required: true, trim: true },
+  author: { type: String, required: true, trim: true },
+  description: { type: String, trim: true },
+  publisher: { type: String, required: true, trim: true },
+  year: { type: Number, required: true, min: 0 },
+  binding: { type: String, required: true, enum: ["Tapa dura", "Tapa blanda"] },
+  pages: { type: Number, required: true, min: 1 },
+  dimensions: { type: String, required: true, trim: true },
+  language: { type: String, required: true, trim: true },
+  price: { type: Number, required: true, min: 0 },
+  image: { type: String, required: true, trim: true },
+  categories: { type: [String], required: false, default: [] }, // Array de categorías opcional
 });
 
 export const Book = model<BookDocumentInterface>("Book", bookSchema);
