@@ -40,6 +40,7 @@ describe('Cart Controller', () => {
           language: 'English',
           price: 9.99,
           image: 'http://example.com/1984.jpg',
+          categories: ['Novel', 'Fiction', 'Dystopian']
         });
 
       expect(bookResponse.status).to.equal(201);

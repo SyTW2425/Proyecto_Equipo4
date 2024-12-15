@@ -23,7 +23,7 @@ const bookSchema = new Schema<BookDocumentInterface>({
   description: { type: String, trim: true },
   publisher: { type: String, required: true, trim: true },
   year: { type: Number, required: true, min: 0 },
-  binding: { type: String, required: true, enum: ["Tapa dura", "Tapa blanda"] },
+  binding: { type: String, required: true, enum: ["Hardcover", "Softcover"] },
   pages: { type: Number, required: true, min: 1 },
   dimensions: { type: String, required: true, trim: true },
   language: { type: String, required: true, trim: true },

@@ -21,6 +21,7 @@ describe('Book Controller', () => {
       language: 'English',
       price: 15.99,
       image: 'http://example.com/gatsby.jpg',
+      categories: ['Novel', 'Fiction', 'Classic']
     };
 
     request(app)

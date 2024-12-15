@@ -41,6 +41,7 @@ describe('List Controller', () => {
             language: 'English',
             price: 15.99,
             image: 'http://example.com/gatsby.jpg',
+            categories: ['Novel', 'Fiction', 'Classic']
         });
       
       expect(bookResponse.status).to.equal(201);
