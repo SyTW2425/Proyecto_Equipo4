@@ -32,7 +32,7 @@
   <nav>
     <ul class="flex items-center space-x-4">
       <li v-if="!currentUser">
-        <router-link to="/sign-in" class="text-white hover:text-gray-300">Login</router-link>
+        <router-link to="/sign-in" class="text-white hover:text-gray-300">Sign In</router-link>
       </li>
       <li v-else class="relative">
         <button
@@ -50,6 +50,12 @@
           v-if="showMenu"
           class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
         >
+        <router-link
+                to="/cart"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Carrito de Compra
+              </router-link>
           <router-link
             to="/book-list"
             class="block px-4 py-2 text-gray-700 hover:bg-gray-100"

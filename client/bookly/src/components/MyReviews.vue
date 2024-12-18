@@ -30,16 +30,22 @@
               class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
             >
               <router-link
-                to="/book-list"
-                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Mis Listas
+                  to="/cart"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Carrito de Compra
+              </router-link>
+              <router-link
+                  to="/book-list"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Mis Listas
               </router-link>
               <button
-                @click="logout"
-                class="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Logout
+                  @click="logout"
+                  class="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
               </button>
             </div>
           </li>
@@ -79,6 +85,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Notificación -->
+    <div v-if="notification.message"
+         :class="['fixed bottom-4 right-4 p-4 rounded shadow-lg', notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white']">
+      {{ notification.message }}
+    </div>
   </div>
 </template>
 
@@ -93,6 +105,7 @@ export default {
       user: null, // Usuario autenticado
       isLoading: true, // Indicador de carga
       showMenu: false, // Controla el menú desplegable
+      notification: { message: "", type: "" }, // Notificación dinámica
     };
   },
   methods: {
@@ -128,10 +141,10 @@ export default {
       try {
         await axios.delete(`http://localhost:3000/reviews/${reviewId}`);
         this.reviews = this.reviews.filter((review) => review._id !== reviewId);
-        alert("Reseña eliminada correctamente.");
+        this.showNotification("Reseña eliminada correctamente.", "success");
       } catch (error) {
         console.error("Error al eliminar la reseña:", error.response || error.message);
-        alert("Hubo un error al eliminar la reseña.");
+        this.showNotification("Hubo un error al eliminar la reseña.", "error");
       }
     },
     toggleMenu() {
@@ -157,6 +170,12 @@ export default {
       } catch (error) {
         console.error("Error al obtener el usuario:", error.response || error.message);
       }
+    },
+    showNotification(message, type) {
+      this.notification = { message, type };
+      setTimeout(() => {
+        this.notification = { message: "", type: "" };
+      }, 3000);
     },
   },
   async mounted() {
