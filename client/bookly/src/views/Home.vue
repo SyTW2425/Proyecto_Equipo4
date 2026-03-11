@@ -290,10 +290,7 @@ export default {
       this.showListMenu = false;
     },
     logout() {
-      localStorage.removeItem("authToken");
-      this.user = null;
-      this.showMenu = false;
-      this.$router.push("/sign-in");
+      this.$keycloak.logout({ redirectUri: window.location.origin + '/' });
     },
     async addBookToList(listId) {
       try {
@@ -336,8 +333,13 @@ export default {
     },
     async fetchUser() {
       try {
+        if (!this.$keycloak.authenticated) {
+          this.user = null;
+          return;
+        }
+        await this.$keycloak.updateToken(30);
         const response = await axios.get("http://localhost:3000/user", {
-          headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
+          headers: { authorization: `Bearer ${this.$keycloak.token}` },
         });
         this.user = response.data.user;
 

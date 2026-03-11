@@ -182,20 +182,18 @@ export default {
         console.error("Error al vaciar el carrito:", error.response || error.message);
       }
     },
-    async logout() {
-      try {
-        localStorage.removeItem("authToken");
-        this.user = null;
-        this.cartItems = [];
-        this.$router.push("/sign-in");
-      } catch (error) {
-        console.error("Error al cerrar sesión:", error);
-      }
+    logout() {
+      this.$keycloak.logout({ redirectUri: window.location.origin + '/' });
     },
     async fetchUser() {
       try {
+        if (!this.$keycloak.authenticated) {
+          this.user = null;
+          return;
+        }
+        await this.$keycloak.updateToken(30);
         const response = await axios.get("http://localhost:3000/user", {
-          headers: { authorization: `Bearer ${localStorage.getItem("authToken")}` },
+          headers: { authorization: `Bearer ${this.$keycloak.token}` },
         });
         this.user = response.data.user;
         await this.fetchCartItems();

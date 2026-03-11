@@ -322,13 +322,18 @@ export default {
     },
     async fetchCurrentUser() {
       try {
+        if (!this.$keycloak.authenticated) {
+          this.currentUser = null;
+          return;
+        }
+        await this.$keycloak.updateToken(30);
         const response = await axios.get("http://localhost:3000/user", {
           headers: {
-            authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            authorization: `Bearer ${this.$keycloak.token}`,
           },
         });
         this.currentUser = response.data.user;
-        this.review.user = this.currentUser.username; // Asigna el usuario logeado a las reseñas
+        this.review.user = this.currentUser.username;
       } catch (error) {
         console.error("Error al obtener el usuario actual:", error.response || error.message);
         this.currentUser = null;
@@ -372,10 +377,7 @@ showNotification(message, type) {
       this.showMenu = !this.showMenu;
     },
     logout() {
-      localStorage.removeItem("authToken");
-      this.user = null;
-      this.showMenu = false;
-      this.$router.push("/sign-in");
+      this.$keycloak.logout({ redirectUri: window.location.origin + '/' });
     },
   },
   async mounted() {

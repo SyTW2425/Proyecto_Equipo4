@@ -1,15 +1,42 @@
 version: '3.8'
 
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak
+    command: start-dev --import-realm --health-enabled=true
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./keycloak/bookly-realm.json:/opt/keycloak/data/import/bookly-realm.json
+    ports:
+      - "8180:8080"
+    networks:
+      - app-network
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -f http://localhost:9000/health/ready || exit 1"]
+    #   interval: 15s
+    #   timeout: 10s
+    #   retries: 10
+    #   start_period: 60s
+
   server:
     build:
       context: ./server
     container_name: server
     environment:
-      - MONGO_URI=mongodb+srv://yanfri:Yanfri@cluster0.tdrhb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_URI=mongodb+srv://yanfri:Yanfri@cluster0.tdrhb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - NODE_ENV=production
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=bookly
+      - KEYCLOAK_ISSUER=http://localhost:8180/realms/bookly
+      - KEYCLOAK_ADMIN_USER=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
     ports:
       - "3000:3000"
+    depends_on:
+      - keycloak
     networks:
       - app-network
 

@@ -13,55 +13,25 @@
     <!-- PANTALLA CENTRAL -->
     <div class="mt-32 px-8 flex flex-col items-center">
       <h1 class="text-2xl font-bold text-gray-800 underline">Inicio de sesión</h1>
-      
-      <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 w-full sm:max-w-sm">
-        <div class="formulario bg-white p-6 shadow-lg rounded-lg">
-          <form @submit.prevent="formularioInicio" class="space-y-4">
-            <div>
-              <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre de usuario:</label>
-              <input
-                type="text"
-                id="nombre"
-                v-model="form.username"
-                placeholder="Ingresa tu nombre de usuario"
-                required
-                class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-            </div>
-            <div>
-              <label for="password" class="block text-sm font-medium text-gray-700">Contraseña:</label>
-              <input
-                type="password"
-                id="password"
-                v-model="form.password"
-                placeholder="Ingresa tu contraseña"
-                required
-                class="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 placeholder-gray-400 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                class="rounded-full px-3 py-2 w-full text-sm flex justify-center bg-emerald-600 font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-              >
-                Iniciar sesión
-              </button>
-            </div>
-          </form>
 
-          <!-- Mensaje de Registro -->
-          <p class="mt-4 text-center text-sm text-gray-600">
-            ¿No tienes cuenta? 
+      <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 w-full sm:max-w-sm">
+        <div class="formulario bg-white p-6 shadow-lg rounded-lg flex flex-col items-center space-y-6">
+          <p class="text-sm text-gray-600 text-center">
+            Serás redirigido a la página de inicio de sesión segura.
+          </p>
+          <button
+            @click="login"
+            class="rounded-full px-6 py-3 w-full text-sm flex justify-center bg-emerald-600 font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+          >
+            Iniciar sesión
+          </button>
+
+          <p class="text-center text-sm text-gray-600">
+            ¿No tienes cuenta?
             <router-link to="/sign-up" class="font-semibold text-emerald-600 hover:underline">
               Regístrate aquí
             </router-link>
           </p>
-
-          <div v-if="mensajeEnviado" class="mt-6 p-4 bg-green-100 rounded-lg text-green-700 border border-green-300">
-            <p><strong>¡Formulario enviado!</strong></p>
-            <p><strong>Nombre:</strong> {{ form.username }}</p>
-            <p><strong>Contraseña:</strong> {{ form.password }}</p>
-          </div>
         </div>
       </div>
     </div>
@@ -69,41 +39,15 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
-  data() {
-    return {
-      form: {
-        username: "",
-        password: "",
-      },
-      mensajeEnviado: false,
-    };
-  },
   methods: {
-    async formularioInicio() {
-      try {
-        // URL del endpoint del backend
-        const url = "http://localhost:3000/users/login";
-
-        // Enviar datos al backend
-        const respuesta = await axios.post(url, {
-          username: this.form.username,
-          password: this.form.password,
-        });
-
-        // Procesar respuesta del servidor
-        console.log("Respuesta del servidor:", respuesta.data);
-
-        localStorage.setItem('authToken', respuesta.data.token);  // Suponiendo que el token se devuelve en la respuesta
-
-        // Redirigir al usuario a la página de inicio
-        this.$router.push('/');  
-
-      } catch (error) {
-        console.error("Error al iniciar sesión", error.response || error.message);
-        alert(error.response.data.message || "Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
-      }
+    login() {
+      this.$keycloak.login({ redirectUri: window.location.origin + '/' });
+    },
+  },
+  mounted() {
+    if (this.$keycloak.authenticated) {
+      this.$router.push('/');
     }
   },
 };
