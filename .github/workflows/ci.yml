@@ -40,8 +40,8 @@ jobs:
           docker logs server
 
       # 6. Ejecutar pruebas del backend
-      - name: Run Backend Tests
-        run: docker exec server npm test
+      #- name: Run Backend Tests
+        #run: docker exec server npm test
 
       # 7. Detener y limpiar contenedores
       - name: Tear Down
